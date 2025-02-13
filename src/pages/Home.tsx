@@ -7,7 +7,6 @@ import { useState } from "react";
 
 const Home: React.FC = () => {
   const [page, setPage] = useState(1);
-
   const [searchTerm, setSearchTerm] = useState("technology");
   const [filterDate, setFilterDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -15,7 +14,7 @@ const Home: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState("technology");
   const [filterSource, setFilterSource] = useState("");
 
-  const { data, error, isLoading, isFetching } = useFetchArticlesQuery({
+  const { data, isLoading, isFetching, error } = useFetchArticlesQuery({
     searchTerm,
     date: filterDate,
     category: filterCategory,
@@ -24,22 +23,19 @@ const Home: React.FC = () => {
   });
 
   const showSkeleton = isLoading || isFetching;
+  const isValidPage = !error && (data?.articles?.length ?? 0) > 0;
 
-  const rawTotalPages =
-    data && data.totalResults && data.pageSize
-      ? Math.ceil(data.totalResults / data.pageSize)
-      : 1;
-
-  const totalPages = Math.min(rawTotalPages, 100);
+  let totalPages = 1;
+  if (data?.totalResults && data?.pageSize) {
+    totalPages = Math.min(Math.ceil(data.totalResults / data.pageSize), 100);
+  }
 
   return (
     <div className="container mx-auto min-h-screen bg-background p-4">
-      <h1 className="text-3xl text-center font-bold mb-4 text-foreground">
+      <h1 className="text-3xl font-bold mb-4 text-center text-foreground">
         News Feed
       </h1>
-
       <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-
       <FilterPanel
         date={filterDate}
         category={filterCategory}
@@ -48,18 +44,13 @@ const Home: React.FC = () => {
         onCategoryChange={setFilterCategory}
         onSourceChange={setFilterSource}
       />
-
-      <NewsFeed
-        articles={data ? data.articles : []}
-        isLoading={showSkeleton}
-        error={error}
-      />
-
-      <div className="mt-4">
+      <NewsFeed articles={data?.articles ?? []} isLoading={showSkeleton} />
+      <div className="mt-6 flex justify-center">
         <PaginationControls
           currentPage={page}
           totalPages={totalPages}
-          onPageChange={(p) => setPage(Math.min(p, 100))}
+          onPageChange={setPage}
+          isValidPage={isValidPage}
         />
       </div>
     </div>

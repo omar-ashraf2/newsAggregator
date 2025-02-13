@@ -13,12 +13,14 @@ interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  isValidPage: boolean;
 }
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({
   currentPage,
   totalPages,
   onPageChange,
+  isValidPage,
 }) => {
   const paginationRange = usePagination({
     currentPage,
@@ -31,7 +33,9 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+            onClick={() =>
+              isValidPage && onPageChange(Math.max(currentPage - 1, 1))
+            }
           />
         </PaginationItem>
 
@@ -43,7 +47,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           ) : (
             <PaginationItem key={item}>
               <PaginationLink
-                onClick={() => onPageChange(item)}
+                onClick={() => isValidPage && onPageChange(item)}
                 isActive={currentPage === item}
               >
                 {item}
@@ -54,7 +58,9 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
         <PaginationItem>
           <PaginationNext
-            onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+            onClick={() =>
+              isValidPage && onPageChange(Math.min(currentPage + 1, totalPages))
+            }
           />
         </PaginationItem>
       </PaginationContent>
