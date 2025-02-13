@@ -24,7 +24,6 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
     currentPage,
     totalPages,
     siblingCount: 1,
-    boundaryCount: 1,
   });
 
   return (
@@ -36,18 +35,18 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           />
         </PaginationItem>
 
-        {paginationRange.map((page, index) =>
-          page === "ellipsis" ? (
-            <PaginationItem key={index}>
+        {paginationRange.map((item, index) =>
+          item === "ellipsis" ? (
+            <PaginationItem key={`ellipsis-${index}`}>
               <PaginationEllipsis />
             </PaginationItem>
           ) : (
-            <PaginationItem key={page}>
+            <PaginationItem key={item}>
               <PaginationLink
-                onClick={() => onPageChange(page)}
-                isActive={currentPage === page}
+                onClick={() => onPageChange(item)}
+                isActive={currentPage === item}
               >
-                {page}
+                {item}
               </PaginationLink>
             </PaginationItem>
           )

@@ -3,8 +3,8 @@ import ModeToggle from "./mode-toggle";
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-background shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="bg-background shadow-md z-10">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-foreground">
           News Aggregator
         </Link>

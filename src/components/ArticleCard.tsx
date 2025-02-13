@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { Article } from "@/types/Article";
+import { useNavigate } from "react-router-dom";
 
 interface ArticleCardProps {
   article: Article;
@@ -19,12 +19,16 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       onClick={handleClick}
       className="bg-card rounded shadow p-4 cursor-pointer hover:shadow-lg transition"
     >
-      {article.imageUrl && (
+      {article.imageUrl ? (
         <img
           src={article.imageUrl}
           alt={article.title}
           className="w-full h-48 object-cover rounded mb-2"
         />
+      ) : (
+        <div className="w-full h-48 bg-muted flex items-center justify-center rounded mb-2">
+          <span className="text-muted-foreground">No Image</span>
+        </div>
       )}
       <h2 className="text-xl font-semibold text-foreground">{article.title}</h2>
       <p className="my-2 text-muted-foreground">{article.description}</p>

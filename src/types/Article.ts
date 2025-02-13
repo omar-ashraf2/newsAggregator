@@ -3,9 +3,7 @@ export interface Article {
   title: string;
   description: string;
   url: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   publishedAt: string;
   source: string;
-  category?: string;
-  author?: string;
 }
