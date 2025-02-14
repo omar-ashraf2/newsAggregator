@@ -25,12 +25,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           onDateChange(e.target.value)
         }
-        className="p-2 border border-border rounded"
+        className="p-2 border border-border rounded bg-background"
       />
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="p-2 border border-border rounded"
+        className="p-2 border border-border rounded bg-background"
       >
         <option value="">All Categories</option>
         <option value="technology">Technology</option>
@@ -40,7 +40,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       <select
         value={source}
         onChange={(e) => onSourceChange(e.target.value)}
-        className="p-2 border border-border rounded"
+        className="p-2 border border-border rounded bg-background"
       >
         <option value="">All Sources</option>
         <option value="NewsAPI">NewsAPI</option>

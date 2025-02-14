@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       placeholder="Search for articles..."
       value={searchTerm}
       onChange={handleChange}
-      className="w-full p-2 border border-border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+      className="w-full p-2 border border-border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
     />
   );
 };

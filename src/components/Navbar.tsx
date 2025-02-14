@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import ModeToggle from "./mode-toggle";
 
-const Header: React.FC = () => {
+const Navbar: React.FC = () => {
   return (
-    <header className="bg-background shadow-md z-10">
+    <nav className="bg-background shadow-md z-10 border-b">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-foreground">
           News Aggregator
@@ -18,8 +18,8 @@ const Header: React.FC = () => {
           <ModeToggle />
         </nav>
       </div>
-    </header>
+    </nav>
   );
 };
 
-export default Header;
+export default Navbar;

@@ -8,9 +8,7 @@ import { useState } from "react";
 const Home: React.FC = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("technology");
-  const [filterDate, setFilterDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [filterDate, setFilterDate] = useState("");
   const [filterCategory, setFilterCategory] = useState("technology");
   const [filterSource, setFilterSource] = useState("");
 
@@ -32,9 +30,17 @@ const Home: React.FC = () => {
 
   return (
     <div className="container mx-auto min-h-screen bg-background p-4">
-      <h1 className="text-3xl font-bold mb-4 text-center text-foreground">
-        News Feed
-      </h1>
+      <header className="py-28">
+        <h1 className="flex flex-col justify-center items-center text-6xl font-bold mb-4 text-foreground uppercase">
+          <span>Get Informed</span>
+          <span className="border-b-[12px] border-b-[#f52828] w-max">
+            Get Inspired
+          </span>
+        </h1>
+        <h2 className="text-2xl font-light text-center text-foreground">
+          Stories Curated For You
+        </h2>
+      </header>
       <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <FilterPanel
         date={filterDate}
