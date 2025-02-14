@@ -1,10 +1,6 @@
 import type { Article } from "@/types/Article";
 import type { FetchArticlesParams } from "@/types/FetchArticlesParams";
-import type {
-  FetchBaseQueryError,
-  FetchBaseQueryMeta,
-  QueryReturnValue,
-} from "@reduxjs/toolkit/query";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { baseQueryWithInterceptor } from "@/app/baseQueryWithInterceptor";
@@ -30,20 +26,9 @@ export const articlesApi = createApi({
       { articles: Article[]; totalResults: number; pageSize: number },
       FetchArticlesParams
     >({
-      async queryFn(
-        params,
-        api,
-        extraOptions,
-        baseQuery
-      ): Promise<
-        QueryReturnValue<
-          { articles: Article[]; totalResults: number; pageSize: number },
-          FetchBaseQueryError,
-          FetchBaseQueryMeta
-        >
-      > {
+      async queryFn(params, api, extraOptions, baseQuery) {
         try {
-          const { searchTerm, date, category, page } = params;
+          const { searchTerm, fromDate, toDate, category, page } = params;
 
           // Fetch all APIs in parallel
           const responses = await Promise.allSettled([
@@ -52,7 +37,8 @@ export const articlesApi = createApi({
               api,
               extraOptions,
               searchTerm,
-              date,
+              fromDate,
+              toDate,
               page,
               PAGE_SIZE_PER_SOURCE
             ),
@@ -62,30 +48,38 @@ export const articlesApi = createApi({
               extraOptions,
               searchTerm,
               category,
+              fromDate,
+              toDate,
               page,
               PAGE_SIZE_PER_SOURCE
             ),
-            nyTimesApi(baseQuery, api, extraOptions, searchTerm, page),
+            nyTimesApi(
+              baseQuery,
+              api,
+              extraOptions,
+              searchTerm,
+              fromDate,
+              page
+            ),
           ]);
 
           const [newsResult, guardianResult, nyTimesResult] = responses;
 
           // Extract successful responses
           const newsData =
-            newsResult.status === "fulfilled" && newsResult.value.data
+            newsResult.status === "fulfilled"
               ? transformNewsAPIData(newsResult.value.data)
               : [];
-
           const guardianData =
-            guardianResult.status === "fulfilled" && guardianResult.value.data
+            guardianResult.status === "fulfilled"
               ? transformGuardianData(guardianResult.value.data)
               : [];
-
           const nyTimesData =
-            nyTimesResult.status === "fulfilled" && nyTimesResult.value.data
+            nyTimesResult.status === "fulfilled"
               ? transformNYTimesData(nyTimesResult.value.data)
               : [];
 
+          // Merge results
           const combinedArticles = mergeAndSortArticles(
             newsData,
             guardianData,
@@ -137,23 +131,19 @@ export const articlesApi = createApi({
               } as unknown as FetchBaseQueryError,
             };
           }
-
-          // Total results from successful sources
-          const totalResults =
-            (newsResult.status === "fulfilled"
-              ? newsResult.value.data?.totalResults || 0
-              : 0) +
-            (guardianResult.status === "fulfilled"
-              ? guardianResult.value.data?.response.total || 0
-              : 0) +
-            (nyTimesResult.status === "fulfilled"
-              ? nyTimesResult.value.data?.response.meta.hits || 0
-              : 0);
-
           return {
             data: {
               articles: combinedArticles,
-              totalResults,
+              totalResults:
+                (newsResult.status === "fulfilled"
+                  ? newsResult.value.data?.totalResults || 0
+                  : 0) +
+                (guardianResult.status === "fulfilled"
+                  ? guardianResult.value.data?.response.total || 0
+                  : 0) +
+                (nyTimesResult.status === "fulfilled"
+                  ? nyTimesResult.value.data?.response.meta.hits || 0
+                  : 0),
               pageSize: combinedArticles.length,
             },
           };

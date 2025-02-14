@@ -8,19 +8,20 @@ import { useState } from "react";
 const Home: React.FC = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("technology");
-  const [filterDate, setFilterDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [filterCategory, setFilterCategory] = useState("technology");
   const [filterSource, setFilterSource] = useState("");
 
   const { data, isLoading, isFetching, error } = useFetchArticlesQuery({
     searchTerm,
-    date: filterDate,
+    fromDate,
+    toDate,
     category: filterCategory,
     source: filterSource,
     page,
   });
 
-  const showSkeleton = isLoading || isFetching;
   const isValidPage = !error && (data?.articles?.length ?? 0) > 0;
 
   let totalPages = 1;
@@ -41,16 +42,27 @@ const Home: React.FC = () => {
           Stories Curated For You
         </h2>
       </header>
+
       <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+
       <FilterPanel
-        date={filterDate}
+        fromDate={fromDate}
+        toDate={toDate}
         category={filterCategory}
         source={filterSource}
-        onDateChange={setFilterDate}
+        onDateChange={(from, to) => {
+          setFromDate(from);
+          setToDate(to);
+        }}
         onCategoryChange={setFilterCategory}
         onSourceChange={setFilterSource}
       />
-      <NewsFeed articles={data?.articles ?? []} isLoading={showSkeleton} />
+
+      <NewsFeed
+        articles={data?.articles ?? []}
+        isLoading={isLoading || isFetching}
+      />
+
       <div className="mt-6 flex justify-center">
         <PaginationControls
           currentPage={page}

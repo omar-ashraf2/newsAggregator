@@ -20,6 +20,8 @@ export async function guardianApi(
   extraOptions: Record<string, unknown>,
   searchTerm: string,
   category: string,
+  fromDate: string,
+  toDate: string,
   page: number,
   pageSize: number
 ): Promise<{ data?: GuardianResponse; error?: FetchBaseQueryError }> {
@@ -29,6 +31,8 @@ export async function guardianApi(
     `${GUARDIAN_BASE_URL}/search?` +
     `q=${encodeURIComponent(searchTerm)}` +
     `&section=${encodeURIComponent(category)}` +
+    (fromDate ? `&from-date=${fromDate}` : "") +
+    (toDate ? `&to-date=${toDate}` : "") +
     `&page=${clampedPage}` +
     `&page-size=${pageSize}` +
     `&api-key=${GUARDIAN_KEY}` +
@@ -36,8 +40,6 @@ export async function guardianApi(
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
 
-  if (result.error) {
-    return { error: result.error };
-  }
+  if (result.error) return { error: result.error };
   return { data: result.data as GuardianResponse };
 }

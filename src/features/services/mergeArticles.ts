@@ -3,8 +3,8 @@ import type { GuardianResponse } from "@/types/Guardian";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
-export function transformNewsAPIData(newsData: NewsAPIResponse): Article[] {
-  return (newsData.articles || []).map((item) => ({
+export function transformNewsAPIData(newsData: NewsAPIResponse | undefined): Article[] {
+  return (newsData?.articles || []).map((item) => ({
     id: item.url,
     title: item.title,
     description: item.description,
@@ -16,9 +16,9 @@ export function transformNewsAPIData(newsData: NewsAPIResponse): Article[] {
 }
 
 export function transformGuardianData(
-  guardianData: GuardianResponse
+  guardianData: GuardianResponse | undefined
 ): Article[] {
-  return (guardianData.response?.results || []).map((item) => ({
+  return (guardianData?.response?.results || []).map((item) => ({
     id: item.id,
     title: item.webTitle,
     description: "",
@@ -30,9 +30,9 @@ export function transformGuardianData(
 }
 
 export function transformNYTimesData(
-  nyData: NYTimesResponseWrapper
+  nyData: NYTimesResponseWrapper | undefined
 ): Article[] {
-  return (nyData.response.docs || []).map((item) => {
+  return (nyData?.response.docs || []).map((item) => {
     let imageUrl: string | null = null;
     if (item.multimedia && item.multimedia.length > 0) {
       const highResMedia =

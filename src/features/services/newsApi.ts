@@ -19,7 +19,8 @@ export async function newsApi(
   api: BaseQueryApi,
   extraOptions: Record<string, unknown>,
   searchTerm: string,
-  date: string,
+  fromDate: string,
+  toDate: string,
   page: number,
   pageSize: number
 ): Promise<{ data?: NewsAPIResponse; error?: FetchBaseQueryError }> {
@@ -28,15 +29,14 @@ export async function newsApi(
   const url =
     `${NEWSAPI_BASE_URL}/everything?` +
     `q=${encodeURIComponent(searchTerm)}` +
-    `&from=${date}` +
+    (fromDate ? `&from=${fromDate}` : "") +
+    (toDate ? `&to=${toDate}` : "") +
     `&page=${clampedPage}` +
     `&pageSize=${pageSize}` +
     `&apiKey=${NEWSAPI_KEY}`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
 
-  if (result.error) {
-    return { error: result.error };
-  }
+  if (result.error) return { error: result.error };
   return { data: result.data as NewsAPIResponse };
 }

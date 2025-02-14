@@ -19,6 +19,7 @@ export async function nyTimesApi(
   api: BaseQueryApi,
   extraOptions: Record<string, unknown>,
   searchTerm: string,
+  fromDate: string,
   page: number
 ): Promise<{ data?: NYTimesResponseWrapper; error?: FetchBaseQueryError }> {
   const zeroBasedPage = Math.min(page - 1, MAX_PAGE - 1);
@@ -27,13 +28,12 @@ export async function nyTimesApi(
   const url =
     `${NYTIMES_BASE_URL}/articlesearch.json?` +
     `q=${encodeURIComponent(searchTerm)}` +
+    (fromDate ? `&begin_date=${fromDate.replace(/-/g, "")}` : "") +
     `&page=${clampedPage}` +
     `&api-key=${NYTIMES_KEY}`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
 
-  if (result.error) {
-    return { error: result.error };
-  }
+  if (result.error) return { error: result.error };
   return { data: result.data as NYTimesResponseWrapper };
 }
