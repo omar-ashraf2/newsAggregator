@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 interface FilterPanelProps {
   fromDate: string;
@@ -46,7 +55,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 my-4">
+    <div className="flex flex-col md:flex-row gap-4 my-4">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -76,27 +85,35 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </PopoverContent>
       </Popover>
 
-      <select
-        value={category}
-        onChange={(e) => onCategoryChange(e.target.value)}
-        className="p-2 border border-border rounded bg-background"
-      >
-        <option value="">All Categories</option>
-        <option value="technology">Technology</option>
-        <option value="business">Business</option>
-        <option value="sports">Sports</option>
-      </select>
+      <Select value={category} onValueChange={onCategoryChange}>
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder="Select category" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Categories</SelectLabel>
+            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="technology">Technology</SelectItem>
+            <SelectItem value="business">Business</SelectItem>
+            <SelectItem value="sports">Sports</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
-      <select
-        value={source}
-        onChange={(e) => onSourceChange(e.target.value)}
-        className="p-2 border border-border rounded bg-background"
-      >
-        <option value="">All Sources</option>
-        <option value="NewsAPI">NewsAPI</option>
-        <option value="TheGuardian">The Guardian</option>
-        <option value="NYTimes">New York Times</option>
-      </select>
+      <Select value={source} onValueChange={onSourceChange}>
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder="Select source" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sources</SelectLabel>
+            <SelectItem value="all">All Sources</SelectItem>
+            <SelectItem value="NewsAPI">NewsAPI</SelectItem>
+            <SelectItem value="TheGuardian">The Guardian</SelectItem>
+            <SelectItem value="NYTimes">New York Times</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
   );
 };

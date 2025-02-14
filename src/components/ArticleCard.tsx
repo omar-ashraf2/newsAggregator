@@ -37,7 +37,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     <div
       onClick={handleClick}
       className={cn(
-        "cursor-pointer bg-card backdrop-blur-md border border-border rounded-xl shadow-lg p-4 transition-all",
+        "cursor-pointer backdrop-blur-md border border-border rounded-xl shadow-lg p-4 transition-all",
         "hover:shadow-2xl hover:-translate-y-1 active:scale-95"
       )}
     >

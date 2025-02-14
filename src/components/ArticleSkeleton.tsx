@@ -3,7 +3,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const ArticleSkeleton: React.FC = () => {
   return (
-    <div className="bg-card rounded shadow p-4">
+    <div className="backdrop-blur-md border border-border rounded-xl shadow-lg p-4">
       <Skeleton height={200} />
       <h2 className="text-xl font-semibold my-2">
         <Skeleton width="80%" />

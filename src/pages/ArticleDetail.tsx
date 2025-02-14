@@ -32,7 +32,7 @@ const ArticleDetail: React.FC = () => {
       >
         Back
       </button>
-      <div className="bg-card rounded shadow p-6">
+      <div className="rounded shadow p-6">
         {article.imageUrl && (
           <img
             src={article.imageUrl}
