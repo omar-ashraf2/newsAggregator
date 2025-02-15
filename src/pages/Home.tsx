@@ -11,7 +11,7 @@ import {
   setPage,
   setSearchTerm,
 } from "@/features/filters/filterSlice";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Home: React.FC = () => {
@@ -19,9 +19,18 @@ const Home: React.FC = () => {
   const { searchTerm, fromDate, toDate, filterCategory, filterSource, page } =
     useSelector((state: RootState) => state.filters);
 
-  const effectiveFromDate = fromDate && toDate ? fromDate : "";
-  const effectiveToDate = fromDate && toDate ? toDate : "";
-  const skipQuery = Boolean((fromDate && !toDate) || (!fromDate && toDate));
+  const effectiveFromDate = useMemo(
+    () => (fromDate && toDate ? fromDate : ""),
+    [fromDate, toDate]
+  );
+  const effectiveToDate = useMemo(
+    () => (fromDate && toDate ? toDate : ""),
+    [fromDate, toDate]
+  );
+  const skipQuery = useMemo(
+    () => Boolean((fromDate && !toDate) || (!fromDate && toDate)),
+    [fromDate, toDate]
+  );
 
   const { data, isLoading, isFetching, error } = useFetchArticlesQuery(
     {
@@ -35,12 +44,17 @@ const Home: React.FC = () => {
     { refetchOnMountOrArgChange: true, skip: skipQuery }
   );
 
-  const isValidPage = !error && (data?.articles?.length ?? 0) > 0;
+  const isValidPage = useMemo(
+    () => !error && (data?.articles?.length ?? 0) > 0,
+    [error, data]
+  );
 
-  let totalPages = 1;
-  if (data?.totalResults && data?.pageSize) {
-    totalPages = Math.min(Math.ceil(data.totalResults / data.pageSize), 100);
-  }
+  const totalPages = useMemo(() => {
+    if (data?.totalResults && data?.pageSize) {
+      return Math.min(Math.ceil(data.totalResults / data.pageSize), 100);
+    }
+    return 1;
+  }, [data?.totalResults, data?.pageSize]);
 
   const handleDateChange = useCallback(
     (from: string, to: string) => {
@@ -101,14 +115,16 @@ const Home: React.FC = () => {
         isLoading={isLoading || isFetching}
       />
 
-      <div className="mt-6 flex justify-center">
-        <PaginationControls
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(p) => dispatch(setPage(p))}
-          isValidPage={isValidPage}
-        />
-      </div>
+      {(data?.articles?.length ?? 0) > 0 && (
+        <div className="mt-6 flex justify-center">
+          <PaginationControls
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(p) => dispatch(setPage(p))}
+            isValidPage={isValidPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

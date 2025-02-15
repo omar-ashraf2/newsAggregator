@@ -20,7 +20,7 @@ import type { GuardianResponse } from "@/types/Guardian";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
-export const PAGE_SIZE_PER_SOURCE = 11;
+export const PAGE_SIZE_PER_SOURCE = 10;
 
 function isNewsAPIResponse(data: unknown): data is NewsAPIResponse {
   return (
