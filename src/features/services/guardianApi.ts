@@ -29,8 +29,8 @@ export async function guardianApi(
 
   const url =
     `${GUARDIAN_BASE_URL}/search?` +
-    `q=${encodeURIComponent(searchTerm)}` +
-    `&section=${encodeURIComponent(category)}` +
+    (searchTerm ? `q=${encodeURIComponent(searchTerm)}` : "") +
+    (category !== "all" ? `&section=${encodeURIComponent(category)}` : "") +
     (fromDate ? `&from-date=${fromDate}` : "") +
     (toDate ? `&to-date=${toDate}` : "") +
     `&page=${clampedPage}` +

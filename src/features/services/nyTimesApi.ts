@@ -20,15 +20,22 @@ export async function nyTimesApi(
   extraOptions: Record<string, unknown>,
   searchTerm: string,
   fromDate: string,
+  category: string,
   page: number
 ): Promise<{ data?: NYTimesResponseWrapper; error?: FetchBaseQueryError }> {
   const zeroBasedPage = Math.min(page - 1, MAX_PAGE - 1);
   const clampedPage = zeroBasedPage < 0 ? 0 : zeroBasedPage;
 
+  const query = encodeURIComponent(searchTerm || "latest news");
+
   const url =
     `${NYTIMES_BASE_URL}/articlesearch.json?` +
-    `q=${encodeURIComponent(searchTerm)}` +
+    `q=${query}` +
     (fromDate ? `&begin_date=${fromDate.replace(/-/g, "")}` : "") +
+    (category !== "all"
+      ? `&fq=news_desk:(${encodeURIComponent(category)})`
+      : "") +
+    `&sort=newest` +
     `&page=${clampedPage}` +
     `&api-key=${NYTIMES_KEY}`;
 

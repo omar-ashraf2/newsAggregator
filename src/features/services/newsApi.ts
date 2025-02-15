@@ -21,16 +21,29 @@ export async function newsApi(
   searchTerm: string,
   fromDate: string,
   toDate: string,
+  category: string,
   page: number,
   pageSize: number
 ): Promise<{ data?: NewsAPIResponse; error?: FetchBaseQueryError }> {
   const clampedPage = Math.min(page, MAX_PAGE);
 
+  let query = "";
+  let endpoint = "everything";
+
+  if (searchTerm.trim()) {
+    query = `q=${encodeURIComponent(searchTerm)}`;
+  } else if (category !== "all") {
+    query = `category=${encodeURIComponent(category)}`;
+    endpoint = "top-headlines";
+  } else {
+    query = "q=breaking news";
+  }
+
   const url =
-    `${NEWSAPI_BASE_URL}/everything?` +
-    `q=${encodeURIComponent(searchTerm)}` +
+    `${NEWSAPI_BASE_URL}/${endpoint}?${query}` +
     (fromDate ? `&from=${fromDate}` : "") +
     (toDate ? `&to=${toDate}` : "") +
+    `&sortBy=publishedAt` +
     `&page=${clampedPage}` +
     `&pageSize=${pageSize}` +
     `&apiKey=${NEWSAPI_KEY}`;

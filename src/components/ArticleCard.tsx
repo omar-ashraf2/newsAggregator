@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 const sourceLogos: Record<string, string> = {
   "New York Times": nytLogo,
   "The Guardian": guardianLogo,
+  NewsApi: newsApiLogo,
 };
 
 const getTimeAgo = (dateString: string) => {
@@ -29,9 +30,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       state: { article },
     });
   };
-
-  const sourceName = article.source || "NewsAPI";
-  const sourceLogo = sourceLogos[sourceName] || newsApiLogo;
 
   return (
     <div
@@ -60,9 +58,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <div className="flex items-center justify-between mt-3">
           {article.source ? (
             <img
-              src={sourceLogo}
-              alt={sourceName}
-              title={sourceName}
+              src={sourceLogos[article.source]}
+              alt={article.source}
+              title={article.source}
               className="h-8 object-contain dark:invert"
             />
           ) : (

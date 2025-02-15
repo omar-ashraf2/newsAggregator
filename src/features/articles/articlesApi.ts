@@ -16,7 +16,7 @@ import {
   transformNYTimesData,
 } from "../services";
 
-export const PAGE_SIZE_PER_SOURCE = 5;
+export const PAGE_SIZE_PER_SOURCE = 11;
 
 export const articlesApi = createApi({
   reducerPath: "articlesApi",
@@ -39,6 +39,7 @@ export const articlesApi = createApi({
               searchTerm,
               fromDate,
               toDate,
+              category,
               page,
               PAGE_SIZE_PER_SOURCE
             ),
@@ -59,6 +60,7 @@ export const articlesApi = createApi({
               extraOptions,
               searchTerm,
               fromDate,
+              category,
               page
             ),
           ]);

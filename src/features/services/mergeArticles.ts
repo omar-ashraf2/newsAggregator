@@ -3,7 +3,9 @@ import type { GuardianResponse } from "@/types/Guardian";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
-export function transformNewsAPIData(newsData: NewsAPIResponse | undefined): Article[] {
+export function transformNewsAPIData(
+  newsData: NewsAPIResponse | undefined
+): Article[] {
   return (newsData?.articles || []).map((item) => ({
     id: item.url,
     title: item.title,
@@ -11,7 +13,7 @@ export function transformNewsAPIData(newsData: NewsAPIResponse | undefined): Art
     url: item.url,
     imageUrl: item.urlToImage || null,
     publishedAt: item.publishedAt,
-    source: item.source.name,
+    source: "NewsApi",
   }));
 }
 
@@ -67,8 +69,14 @@ export function mergeAndSortArticles(
     ...articlesGuardian,
     ...articlesNYTimes,
   ];
-  return combined.sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
+
+  return combined
+    .filter(
+      (article) =>
+        article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())
+    )
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
 }

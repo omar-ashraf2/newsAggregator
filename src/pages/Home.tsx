@@ -3,15 +3,15 @@ import NewsFeed from "@/components/NewsFeed";
 import PaginationControls from "@/components/PaginationControls";
 import SearchBar from "@/components/SearchBar";
 import { useFetchArticlesQuery } from "@/features/articles/articlesApi";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const Home: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("technology");
+  const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [filterCategory, setFilterCategory] = useState("technology");
-  const [filterSource, setFilterSource] = useState("");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [filterSource, setFilterSource] = useState("all");
 
   const { data, isLoading, isFetching, error } = useFetchArticlesQuery({
     searchTerm,
@@ -28,6 +28,22 @@ const Home: React.FC = () => {
   if (data?.totalResults && data?.pageSize) {
     totalPages = Math.min(Math.ceil(data.totalResults / data.pageSize), 100);
   }
+
+  const handleDateChange = useCallback((from: string, to: string) => {
+    setFromDate(from);
+    setToDate(to);
+    setPage(1);
+  }, []);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    setFilterCategory(category);
+    setPage(1);
+  }, []);
+
+  const handleSourceChange = useCallback((source: string) => {
+    setFilterSource(source);
+    setPage(1);
+  }, []);
 
   return (
     <div className="container mx-auto min-h-screen bg-background p-4">
@@ -50,12 +66,9 @@ const Home: React.FC = () => {
         toDate={toDate}
         category={filterCategory}
         source={filterSource}
-        onDateChange={(from, to) => {
-          setFromDate(from);
-          setToDate(to);
-        }}
-        onCategoryChange={setFilterCategory}
-        onSourceChange={setFilterSource}
+        onDateChange={handleDateChange}
+        onCategoryChange={handleCategoryChange}
+        onSourceChange={handleSourceChange}
       />
 
       <NewsFeed

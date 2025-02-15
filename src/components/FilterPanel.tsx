@@ -5,20 +5,14 @@ import { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import DropdownSelect from "@/components/ui/DropdownSelect";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { CATEGORIES } from "@/constants/categories";
+import { SOURCES } from "@/constants/sources";
 import { cn } from "@/lib/utils";
 
 interface FilterPanelProps {
@@ -85,35 +79,19 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </PopoverContent>
       </Popover>
 
-      <Select value={category} onValueChange={onCategoryChange}>
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Select category" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Categories</SelectLabel>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="technology">Technology</SelectItem>
-            <SelectItem value="business">Business</SelectItem>
-            <SelectItem value="sports">Sports</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <DropdownSelect
+        value={category}
+        options={CATEGORIES}
+        onChange={onCategoryChange}
+        placeholder="Select category"
+      />
 
-      <Select value={source} onValueChange={onSourceChange}>
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Select source" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Sources</SelectLabel>
-            <SelectItem value="all">All Sources</SelectItem>
-            <SelectItem value="NewsAPI">NewsAPI</SelectItem>
-            <SelectItem value="TheGuardian">The Guardian</SelectItem>
-            <SelectItem value="NYTimes">New York Times</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <DropdownSelect
+        value={source}
+        options={SOURCES}
+        onChange={onSourceChange}
+        placeholder="Select source"
+      />
     </div>
   );
 };
