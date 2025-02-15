@@ -1,26 +1,39 @@
+import { RootState } from "@/app/store";
 import FilterPanel from "@/components/FilterPanel";
 import NewsFeed from "@/components/NewsFeed";
 import PaginationControls from "@/components/PaginationControls";
 import SearchBar from "@/components/SearchBar";
 import { useFetchArticlesQuery } from "@/features/articles/articlesApi";
-import { useCallback, useState } from "react";
+import {
+  setDateRange,
+  setFilterCategory,
+  setFilterSource,
+  setPage,
+  setSearchTerm,
+} from "@/features/filters/filterSlice";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [filterCategory, setFilterCategory] = useState("all");
-  const [filterSource, setFilterSource] = useState("all");
+  const dispatch = useDispatch();
+  const { searchTerm, fromDate, toDate, filterCategory, filterSource, page } =
+    useSelector((state: RootState) => state.filters);
 
-  const { data, isLoading, isFetching, error } = useFetchArticlesQuery({
-    searchTerm,
-    fromDate,
-    toDate,
-    category: filterCategory,
-    source: filterSource,
-    page,
-  });
+  const effectiveFromDate = fromDate && toDate ? fromDate : "";
+  const effectiveToDate = fromDate && toDate ? toDate : "";
+  const skipQuery = Boolean((fromDate && !toDate) || (!fromDate && toDate));
+
+  const { data, isLoading, isFetching, error } = useFetchArticlesQuery(
+    {
+      searchTerm,
+      fromDate: effectiveFromDate,
+      toDate: effectiveToDate,
+      category: filterCategory,
+      source: filterSource,
+      page,
+    },
+    { refetchOnMountOrArgChange: true, skip: skipQuery }
+  );
 
   const isValidPage = !error && (data?.articles?.length ?? 0) > 0;
 
@@ -29,21 +42,33 @@ const Home: React.FC = () => {
     totalPages = Math.min(Math.ceil(data.totalResults / data.pageSize), 100);
   }
 
-  const handleDateChange = useCallback((from: string, to: string) => {
-    setFromDate(from);
-    setToDate(to);
-    setPage(1);
-  }, []);
+  const handleDateChange = useCallback(
+    (from: string, to: string) => {
+      dispatch(setDateRange({ from, to }));
+    },
+    [dispatch]
+  );
 
-  const handleCategoryChange = useCallback((category: string) => {
-    setFilterCategory(category);
-    setPage(1);
-  }, []);
+  const handleCategoryChange = useCallback(
+    (category: string) => {
+      dispatch(setFilterCategory(category));
+    },
+    [dispatch]
+  );
 
-  const handleSourceChange = useCallback((source: string) => {
-    setFilterSource(source);
-    setPage(1);
-  }, []);
+  const handleSourceChange = useCallback(
+    (source: string) => {
+      dispatch(setFilterSource(source));
+    },
+    [dispatch]
+  );
+
+  const handleSearchChange = useCallback(
+    (term: string) => {
+      dispatch(setSearchTerm(term));
+    },
+    [dispatch]
+  );
 
   return (
     <div className="container mx-auto min-h-screen bg-background p-4">
@@ -59,7 +84,7 @@ const Home: React.FC = () => {
         </h2>
       </header>
 
-      <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
 
       <FilterPanel
         fromDate={fromDate}
@@ -80,7 +105,7 @@ const Home: React.FC = () => {
         <PaginationControls
           currentPage={page}
           totalPages={totalPages}
-          onPageChange={setPage}
+          onPageChange={(p) => dispatch(setPage(p))}
           isValidPage={isValidPage}
         />
       </div>

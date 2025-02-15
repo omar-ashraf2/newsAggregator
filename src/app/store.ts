@@ -1,9 +1,10 @@
 import { articlesApi } from "@/features/articles/articlesApi";
+import filterReducer from "@/features/filters/filterSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {
-    // Add the RTK Query API reducer
+    filters: filterReducer,
     [articlesApi.reducerPath]: articlesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
