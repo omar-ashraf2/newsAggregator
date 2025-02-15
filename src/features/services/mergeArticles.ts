@@ -3,6 +3,9 @@ import type { GuardianResponse } from "@/types/Guardian";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
+/**
+ * Convert NewsAPI articles to our unified Article format.
+ */
 export function transformNewsAPIData(
   newsData: NewsAPIResponse | undefined
 ): Article[] {
@@ -18,6 +21,9 @@ export function transformNewsAPIData(
   }));
 }
 
+/**
+ * Convert The Guardian articles to our unified Article format.
+ */
 export function transformGuardianData(
   guardianData: GuardianResponse | undefined
 ): Article[] {
@@ -33,6 +39,9 @@ export function transformGuardianData(
   }));
 }
 
+/**
+ * Convert NYTimes articles to our unified Article format.
+ */
 export function transformNYTimesData(
   nyData: NYTimesResponseWrapper | undefined
 ): Article[] {
@@ -48,6 +57,7 @@ export function transformNYTimesData(
         imageUrl = "https://www.nytimes.com/" + highResMedia.url;
       }
     }
+
     let publisher = "Unknown";
     if (item.byline && item.byline.person && item.byline.person.length > 0) {
       const person = item.byline.person[0];
@@ -57,6 +67,7 @@ export function transformNYTimesData(
     } else if (item.byline && item.byline.original) {
       publisher = item.byline.original.replace(/^By\s+/i, "");
     }
+
     return {
       id: item.web_url,
       title: item.headline.main,
@@ -71,18 +82,8 @@ export function transformNYTimesData(
 }
 
 /** Merge arrays & sort newest first. */
-export function mergeAndSortArticles(
-  articlesNewsAPI: Article[],
-  articlesGuardian: Article[],
-  articlesNYTimes: Article[]
-): Article[] {
-  const combined = [
-    ...articlesNewsAPI,
-    ...articlesGuardian,
-    ...articlesNYTimes,
-  ];
-
-  return combined
+export function mergeAndSortArticles(articles: Article[]): Article[] {
+  return articles
     .filter(
       (article) =>
         article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())

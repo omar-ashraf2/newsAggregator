@@ -8,47 +8,68 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { usePagination } from "@/hooks/usePagination";
+import { useMemo } from "react";
 
 interface PaginationControlsProps {
   currentPage: number;
-  totalPages: number;
+  totalResults: number;
+  combinedPageSize: number;
   onPageChange: (page: number) => void;
-  isValidPage: boolean;
 }
+const MAX_UI_PAGES = 100;
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({
   currentPage,
-  totalPages,
+  totalResults,
+  combinedPageSize,
   onPageChange,
-  isValidPage,
 }) => {
+  const totalPages = useMemo(() => {
+    if (!totalResults) return 1;
+    const computedTotal = Math.ceil(totalResults / combinedPageSize);
+    return Math.min(computedTotal, MAX_UI_PAGES);
+  }, [totalResults, combinedPageSize]);
+
   const paginationRange = usePagination({
     currentPage,
     totalPages,
     siblingCount: 1,
   });
 
+  if (totalPages <= 1) return null;
+
+  const goToPrevPage = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1);
+    }
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            onClick={() =>
-              isValidPage && onPageChange(Math.max(currentPage - 1, 1))
-            }
+            onClick={goToPrevPage}
+            disabled={currentPage === 1}
           />
         </PaginationItem>
 
-        {paginationRange.map((item, index) =>
+        {paginationRange.map((item, idx) =>
           item === "ellipsis" ? (
-            <PaginationItem key={`ellipsis-${index}`}>
+            <PaginationItem key={`ellipsis-${idx}`}>
               <PaginationEllipsis />
             </PaginationItem>
           ) : (
             <PaginationItem key={item}>
               <PaginationLink
-                onClick={() => isValidPage && onPageChange(item)}
-                isActive={currentPage === item}
+                onClick={() => onPageChange(item)}
+                isActive={item === currentPage}
               >
                 {item}
               </PaginationLink>
@@ -58,9 +79,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
         <PaginationItem>
           <PaginationNext
-            onClick={() =>
-              isValidPage && onPageChange(Math.min(currentPage + 1, totalPages))
-            }
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
           />
         </PaginationItem>
       </PaginationContent>

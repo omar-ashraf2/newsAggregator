@@ -102,7 +102,7 @@ const ArticleDetail: React.FC = () => {
             </span>
           </div>
 
-          {article.publisher && (
+          {article.publisher !== "Unknown" && (
             <p className="text-sm italic text-sky-700">
               By {article.publisher}
             </p>
@@ -146,7 +146,7 @@ const ArticleDetail: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center text-gray-400">
+          <div className="text-center text-muted-foreground text-xl">
             No related articles found.
           </div>
         )}

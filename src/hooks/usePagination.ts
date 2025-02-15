@@ -6,6 +6,9 @@ interface UsePaginationProps {
   siblingCount?: number;
 }
 
+/**
+ * Returns an array of numbers + possible "ellipsis" strings to render a typical pagination range.
+ */
 export function usePagination({
   currentPage,
   totalPages,
@@ -14,10 +17,12 @@ export function usePagination({
   return useMemo(() => {
     const totalPageNumbers = siblingCount * 2 + 5;
 
+    // If total pages is small, just render them all
     if (totalPages <= totalPageNumbers) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
+    // Calculate bounds
     const leftBound = Math.max(currentPage - siblingCount, 2);
     const rightBound = Math.min(currentPage + siblingCount, totalPages - 1);
 

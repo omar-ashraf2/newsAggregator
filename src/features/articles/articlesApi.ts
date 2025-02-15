@@ -1,27 +1,34 @@
-import type { Article } from "@/types/Article";
-import type { FetchArticlesParams } from "@/types/FetchArticlesParams";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { baseQueryWithInterceptor } from "@/app/baseQueryWithInterceptor";
 import { toast } from "@/hooks/use-toast";
 
-import {
-  guardianApi,
-  mergeAndSortArticles,
-  newsApi,
-  nyTimesApi,
-  transformGuardianData,
-  transformNewsAPIData,
-  transformNYTimesData,
-} from "../services";
-
+// Types
+import type { Article } from "@/types/Article";
+import type { FetchArticlesParams } from "@/types/FetchArticlesParams";
 import type { GuardianResponse } from "@/types/Guardian";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
-export const PAGE_SIZE_PER_SOURCE = 12;
+// API calls for each source
+import { guardianApi } from "@/features/services/guardianApi";
+import { newsApi } from "@/features/services/newsApi";
+import { nyTimesApi } from "@/features/services/nyTimesApi";
 
+// Utility transforms
+import {
+  mergeAndSortArticles,
+  transformGuardianData,
+  transformNewsAPIData,
+  transformNYTimesData,
+} from "@/features/services";
+
+// Constants
+export const PAGE_SIZE_PER_SOURCE = 12;
+const MAX_PAGE = 100;
+
+// Type guards
 function isNewsAPIResponse(data: unknown): data is NewsAPIResponse {
   return (
     !!data && typeof data === "object" && "status" in data && "articles" in data
@@ -38,150 +45,166 @@ function isNYTimesResponse(data: unknown): data is NYTimesResponseWrapper {
   );
 }
 
-interface ApiCall {
-  source: string;
-  promise: Promise<{ data?: unknown; error?: FetchBaseQueryError }>;
-}
-
 export const articlesApi = createApi({
   reducerPath: "articlesApi",
   baseQuery: baseQueryWithInterceptor,
   endpoints: (builder) => ({
     fetchArticles: builder.query<
-      { articles: Article[]; totalResults: number; pageSize: number },
+      {
+        articles: Article[];
+        totalResults: number;
+        combinedPageSize: number;
+      },
       FetchArticlesParams
     >({
       async queryFn(params, api, extraOptions, baseQuery) {
         try {
           const { searchTerm, fromDate, toDate, category, source, page } =
             params;
-          const shouldFilterByDate =
-            fromDate && toDate ? { fromDate, toDate } : {};
 
-          const apiCalls: ApiCall[] = [];
+          // Ensure page is in valid range:
+          const clampedPage = Math.max(1, Math.min(page, MAX_PAGE));
 
-          if (source === "NewsApi" || source === "all") {
-            apiCalls.push({
-              source: "NewsApi",
-              promise: newsApi(
-                baseQuery,
-                api,
-                extraOptions,
-                searchTerm,
-                shouldFilterByDate.fromDate || "",
-                shouldFilterByDate.toDate || "",
-                category,
-                page,
-                PAGE_SIZE_PER_SOURCE
-              ).catch((error) => ({ error })),
-            });
-          }
-          if (source === "The Guardian" || source === "all") {
-            apiCalls.push({
-              source: "The Guardian",
-              promise: guardianApi(
-                baseQuery,
-                api,
-                extraOptions,
-                searchTerm,
-                category,
-                shouldFilterByDate.fromDate || "",
-                shouldFilterByDate.toDate || "",
-                page,
-                PAGE_SIZE_PER_SOURCE
-              ).catch((error) => ({ error })),
-            });
-          }
-          if (source === "New York Times" || source === "all") {
-            apiCalls.push({
-              source: "New York Times",
-              promise: nyTimesApi(
-                baseQuery,
-                api,
-                extraOptions,
-                searchTerm,
-                shouldFilterByDate.fromDate || "",
-                category,
-                page
-              ).catch((error) => ({ error })),
-            });
-          }
+          /**
+           * Decide which sources we need to call:
+           * If user picks "all", fetch from each. Otherwise, just from the selected one.
+           */
+          const sourcesToFetch =
+            source === "all"
+              ? ["NewsApi", "The Guardian", "New York Times"]
+              : [source];
 
-          const settledResults = await Promise.allSettled(
-            apiCalls.map((call) => call.promise)
-          );
+          // This is the number of items we REQUEST per source:
+          const requestedSourcesCount = sourcesToFetch.length;
+          const aggregatorPageSize =
+            requestedSourcesCount * PAGE_SIZE_PER_SOURCE;
 
-          const newsArticles: Article[] = [];
-          const guardianArticles: Article[] = [];
-          const nyTimesArticles: Article[] = [];
-          let totalResultsSum = 0;
-          const failedAPIs: string[] = [];
-          const failedMessages: string[] = [];
-
-          settledResults.forEach((result, index) => {
-            const currentSource = apiCalls[index].source;
-            if (result.status === "fulfilled") {
-              const response = result.value;
-              if (response.error) {
-                failedAPIs.push(currentSource);
-                failedMessages.push(
-                  (response.error?.data as { message?: string })?.message ||
-                    `${currentSource} request failed.`
-                );
-              } else {
-                if (
-                  currentSource === "NewsApi" &&
-                  isNewsAPIResponse(response.data)
-                ) {
-                  const articles = transformNewsAPIData(response.data);
-                  newsArticles.push(...articles);
-                  totalResultsSum += response.data.totalResults || 0;
-                } else if (
-                  currentSource === "The Guardian" &&
-                  isGuardianResponse(response.data)
-                ) {
-                  const articles = transformGuardianData(response.data);
-                  guardianArticles.push(...articles);
-                  totalResultsSum += response.data.response.total || 0;
-                } else if (
-                  currentSource === "New York Times" &&
-                  isNYTimesResponse(response.data)
-                ) {
-                  const articles = transformNYTimesData(response.data);
-                  nyTimesArticles.push(...articles);
-                  totalResultsSum += response.data.response.meta.hits || 0;
-                }
-              }
-            } else {
-              failedAPIs.push(currentSource);
-              failedMessages.push(`${currentSource} request failed.`);
+          // Build an array of fetch promises (one per source).
+          const fetchPromises = sourcesToFetch.map(async (src) => {
+            switch (src) {
+              case "NewsApi":
+                return {
+                  source: src,
+                  ...(await newsApi(
+                    baseQuery,
+                    api,
+                    extraOptions,
+                    searchTerm,
+                    fromDate,
+                    toDate,
+                    category,
+                    clampedPage,
+                    PAGE_SIZE_PER_SOURCE
+                  )),
+                };
+              case "The Guardian":
+                return {
+                  source: src,
+                  ...(await guardianApi(
+                    baseQuery,
+                    api,
+                    extraOptions,
+                    searchTerm,
+                    category,
+                    fromDate,
+                    toDate,
+                    clampedPage,
+                    PAGE_SIZE_PER_SOURCE
+                  )),
+                };
+              case "New York Times":
+                return {
+                  source: src,
+                  ...(await nyTimesApi(
+                    baseQuery,
+                    api,
+                    extraOptions,
+                    searchTerm,
+                    fromDate,
+                    category,
+                    clampedPage
+                  )),
+                };
+              default:
+                // If somehow an unknown source got through:
+                return { source: src, data: null, error: null };
             }
           });
 
-          if (failedAPIs.length > 0) {
+          // Run them all in parallel.
+          const settledResults = await Promise.allSettled(fetchPromises);
+
+          // Container for all final transformed articles
+          const allArticles: Article[] = [];
+          let totalResultsSum = 0;
+
+          // For storing any partial failures
+          const failedSources: string[] = [];
+          const failedMessages: string[] = [];
+
+          // Handle results
+          for (const result of settledResults) {
+            if (result.status === "fulfilled") {
+              const { source, data, error } = result.value;
+              if (error) {
+                // If we got an error from baseQuery, track it
+                failedSources.push(source);
+                const msg =
+                  (error.data as { message?: string })?.message ||
+                  `${source} request failed.`;
+                failedMessages.push(msg);
+              } else if (data) {
+                // We have a successful data from the source
+                if (source === "NewsApi" && isNewsAPIResponse(data)) {
+                  const articles = transformNewsAPIData(data);
+                  allArticles.push(...articles);
+                  totalResultsSum += data.totalResults || 0;
+                } else if (
+                  source === "The Guardian" &&
+                  isGuardianResponse(data)
+                ) {
+                  const articles = transformGuardianData(data);
+                  allArticles.push(...articles);
+                  totalResultsSum += data.response.total || 0;
+                } else if (
+                  source === "New York Times" &&
+                  isNYTimesResponse(data)
+                ) {
+                  const articles = transformNYTimesData(data);
+                  allArticles.push(...articles);
+                  totalResultsSum += data.response.meta.hits || 0;
+                }
+              }
+            } else {
+              // The actual promise itself failed
+              // (e.g. network error, promise rejection)
+              failedSources.push("Unknown source");
+              failedMessages.push("A source request failed unexpectedly.");
+            }
+          }
+
+          // If some sources failed, show a toast or handle gracefully
+          if (failedSources.length > 0) {
             toast({
               title: "Some sources failed",
-              description: `Failed to fetch from: ${failedAPIs.join(
-                ", "
-              )}. ${failedMessages.join(" ")}`,
+              description: `Failed to fetch from: ${failedSources.join(", ")}. 
+                ${failedMessages.join(" ")}`,
               variant: "destructive",
             });
           }
 
-          const mergedArticles = mergeAndSortArticles(
-            newsArticles,
-            guardianArticles,
-            nyTimesArticles
-          );
+          // Now merge and sort all articles by date desc
+          const mergedArticles = mergeAndSortArticles(allArticles);
 
           return {
             data: {
               articles: mergedArticles,
               totalResults: totalResultsSum,
-              pageSize: mergedArticles.length,
+              combinedPageSize: aggregatorPageSize,
             },
           };
         } catch (error) {
+          // If something goes wrong altogether
           return {
             error: {
               status: "CUSTOM_ERROR",
