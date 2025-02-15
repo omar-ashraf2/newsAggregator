@@ -23,6 +23,13 @@ export interface NYTimesArticle {
   multimedia: NYTimesMultimedia[];
   headline: NYTimesDocHeadline;
   pub_date: string;
+  byline: {
+    person: {
+      firstname: string;
+      lastname: string;
+    }[];
+    original: string;
+  };
 }
 
 export interface NYTimesResponseWrapper {

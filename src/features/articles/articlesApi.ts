@@ -20,7 +20,7 @@ import type { GuardianResponse } from "@/types/Guardian";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
-export const PAGE_SIZE_PER_SOURCE = 10;
+export const PAGE_SIZE_PER_SOURCE = 12;
 
 function isNewsAPIResponse(data: unknown): data is NewsAPIResponse {
   return (
@@ -60,9 +60,9 @@ export const articlesApi = createApi({
 
           const apiCalls: ApiCall[] = [];
 
-          if (source === "NewsAPI" || source === "all") {
+          if (source === "NewsApi" || source === "all") {
             apiCalls.push({
-              source: "NewsAPI",
+              source: "NewsApi",
               promise: newsApi(
                 baseQuery,
                 api,
@@ -76,9 +76,9 @@ export const articlesApi = createApi({
               ).catch((error) => ({ error })),
             });
           }
-          if (source === "TheGuardian" || source === "all") {
+          if (source === "The Guardian" || source === "all") {
             apiCalls.push({
-              source: "TheGuardian",
+              source: "The Guardian",
               promise: guardianApi(
                 baseQuery,
                 api,
@@ -92,9 +92,9 @@ export const articlesApi = createApi({
               ).catch((error) => ({ error })),
             });
           }
-          if (source === "NYTimes" || source === "all") {
+          if (source === "New York Times" || source === "all") {
             apiCalls.push({
-              source: "NYTimes",
+              source: "New York Times",
               promise: nyTimesApi(
                 baseQuery,
                 api,
@@ -130,21 +130,21 @@ export const articlesApi = createApi({
                 );
               } else {
                 if (
-                  currentSource === "NewsAPI" &&
+                  currentSource === "NewsApi" &&
                   isNewsAPIResponse(response.data)
                 ) {
                   const articles = transformNewsAPIData(response.data);
                   newsArticles.push(...articles);
                   totalResultsSum += response.data.totalResults || 0;
                 } else if (
-                  currentSource === "TheGuardian" &&
+                  currentSource === "The Guardian" &&
                   isGuardianResponse(response.data)
                 ) {
                   const articles = transformGuardianData(response.data);
                   guardianArticles.push(...articles);
                   totalResultsSum += response.data.response.total || 0;
                 } else if (
-                  currentSource === "NYTimes" &&
+                  currentSource === "New York Times" &&
                   isNYTimesResponse(response.data)
                 ) {
                   const articles = transformNYTimesData(response.data);

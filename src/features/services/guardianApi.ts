@@ -36,7 +36,8 @@ export async function guardianApi(
     `&page=${clampedPage}` +
     `&page-size=${pageSize}` +
     `&api-key=${GUARDIAN_KEY}` +
-    `&show-fields=thumbnail`;
+    `&order-by=newest` +
+    `&show-fields=thumbnail,trailText,byline`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
 

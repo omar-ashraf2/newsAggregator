@@ -1,5 +1,7 @@
 export interface GuardianArticleFields {
   thumbnail?: string;
+  trailText?: string;
+  byline?: string;
 }
 
 export interface GuardianArticle {

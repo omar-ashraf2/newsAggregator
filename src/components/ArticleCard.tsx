@@ -48,7 +48,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       </div>
 
       <div className="mt-4">
-        <h2 className="text-xl font-bold text-foreground leading-snug line-clamp-2">
+        <h2 className="text-xl font-heading font-bold text-foreground leading-snug line-clamp-2">
           {article.title}
         </h2>
         <p className="text-sm text-muted-foreground mt-1 line-clamp-3">

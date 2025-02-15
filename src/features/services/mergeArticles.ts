@@ -14,6 +14,7 @@ export function transformNewsAPIData(
     imageUrl: item.urlToImage || null,
     publishedAt: item.publishedAt,
     source: "NewsApi",
+    publisher: item.author || "Unknown",
   }));
 }
 
@@ -23,11 +24,12 @@ export function transformGuardianData(
   return (guardianData?.response?.results || []).map((item) => ({
     id: item.id,
     title: item.webTitle,
-    description: "",
+    description: item.fields?.trailText || "",
     url: item.webUrl,
     imageUrl: item.fields?.thumbnail || null,
     publishedAt: item.webPublicationDate,
     source: "The Guardian",
+    publisher: item.fields?.byline || "Unknown",
   }));
 }
 
@@ -46,6 +48,15 @@ export function transformNYTimesData(
         imageUrl = "https://www.nytimes.com/" + highResMedia.url;
       }
     }
+    let publisher = "Unknown";
+    if (item.byline && item.byline.person && item.byline.person.length > 0) {
+      const person = item.byline.person[0];
+      publisher =
+        `${person.firstname || ""} ${person.lastname || ""}`.trim() ||
+        "Unknown";
+    } else if (item.byline && item.byline.original) {
+      publisher = item.byline.original.replace(/^By\s+/i, "");
+    }
     return {
       id: item.web_url,
       title: item.headline.main,
@@ -54,6 +65,7 @@ export function transformNYTimesData(
       imageUrl,
       publishedAt: item.pub_date,
       source: "New York Times",
+      publisher,
     };
   });
 }
