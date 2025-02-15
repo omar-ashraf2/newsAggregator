@@ -21,7 +21,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
   }, [inputValue, onSearchChange]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    // Remove all special characters, allow only letters, numbers, and spaces.
+    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+    setInputValue(sanitizedValue);
   };
 
   return (
