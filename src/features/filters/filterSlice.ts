@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type SortOrder = "newest" | "oldest" | "relevance";
+
 export interface FilterState {
   searchTerm: string;
   fromDate: string;
@@ -7,6 +9,7 @@ export interface FilterState {
   filterCategory: string;
   filterSource: string;
   page: number;
+  sortOrder: SortOrder;
 }
 
 const initialState: FilterState = {
@@ -16,6 +19,7 @@ const initialState: FilterState = {
   filterCategory: "all",
   filterSource: "all",
   page: 1,
+  sortOrder: "newest",
 };
 
 const filterSlice = createSlice({
@@ -23,8 +27,10 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     setSearchTerm(state, action: PayloadAction<string>) {
-      state.searchTerm = action.payload;
-      state.page = 1;
+      if (state.searchTerm !== action.payload) {
+        state.searchTerm = action.payload;
+        state.page = 1;
+      }
     },
     setDateRange(state, action: PayloadAction<{ from: string; to: string }>) {
       state.fromDate = action.payload.from;
@@ -42,6 +48,10 @@ const filterSlice = createSlice({
     setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
     },
+    setSortOrder(state, action: PayloadAction<SortOrder>) {
+      state.sortOrder = action.payload;
+      state.page = 1;
+    },
   },
 });
 
@@ -51,6 +61,7 @@ export const {
   setFilterCategory,
   setFilterSource,
   setPage,
+  setSortOrder,
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

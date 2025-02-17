@@ -22,31 +22,45 @@ export async function newsApi(
   fromDate: string,
   toDate: string,
   category: string,
+  sortOrder: "newest" | "oldest" | "relevance" = "newest",
   page: number,
   pageSize: number
 ): Promise<{ data?: NewsAPIResponse; error?: FetchBaseQueryError }> {
-  const clampedPage = Math.min(page, MAX_PAGE);
+  const clampedPage = Math.min(Math.max(page, 1), MAX_PAGE);
 
-  let query = "";
-  let endpoint = "everything";
+  const queryParts: string[] = [];
+  const trimmedSearch = searchTerm.trim();
 
-  if (searchTerm.trim()) {
-    query = `q=${encodeURIComponent(searchTerm)}`;
-  } else if (category !== "all") {
-    query = `category=${encodeURIComponent(category)}`;
-    endpoint = "top-headlines";
-  } else {
-    query = "q=breaking news";
+  if (trimmedSearch) {
+    queryParts.push(trimmedSearch);
+  }
+  if (category !== "all") {
+    queryParts.push(category);
   }
 
-  const url =
-    `${NEWSAPI_BASE_URL}/${endpoint}?${query}` +
-    (fromDate ? `&from=${fromDate}` : "") +
-    (toDate ? `&to=${toDate}` : "") +
-    `&sortBy=publishedAt` +
-    `&page=${clampedPage}` +
-    `&pageSize=${pageSize}` +
-    `&apiKey=${NEWSAPI_KEY}`;
+  if (queryParts.length === 0) {
+    queryParts.push("breaking news");
+  }
+
+  const finalQuery = queryParts.join(" ");
+
+  const params: string[] = [];
+  params.push(`q=${encodeURIComponent(finalQuery)}`);
+
+  if (fromDate) params.push(`from=${fromDate}`);
+  if (toDate) params.push(`to=${toDate}`);
+
+  let sortParam = "publishedAt";
+  if (sortOrder === "relevance") {
+    sortParam = "relevancy";
+  }
+
+  params.push(`sortBy=${sortParam}`);
+  params.push(`page=${clampedPage}`);
+  params.push(`pageSize=${pageSize}`);
+  params.push(`apiKey=${NEWSAPI_KEY}`);
+
+  const url = `${NEWSAPI_BASE_URL}/everything?${params.join("&")}`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
 

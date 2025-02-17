@@ -8,18 +8,27 @@ import PaginationControls from "@/components/PaginationControls";
 import SearchBar from "@/components/SearchBar";
 
 import { useFetchArticlesQuery } from "@/features/articles/articlesApi";
+import type { SortOrder } from "@/features/filters/filterSlice";
 import {
   setDateRange,
   setFilterCategory,
   setFilterSource,
   setPage,
   setSearchTerm,
+  setSortOrder,
 } from "@/features/filters/filterSlice";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
-  const { searchTerm, fromDate, toDate, filterCategory, filterSource, page } =
-    useSelector((state: RootState) => state.filters);
+  const {
+    searchTerm,
+    fromDate,
+    toDate,
+    filterCategory,
+    filterSource,
+    page,
+    sortOrder,
+  } = useSelector((state: RootState) => state.filters);
 
   const { data, isLoading, isFetching, error } = useFetchArticlesQuery(
     {
@@ -29,8 +38,9 @@ const Home: React.FC = () => {
       category: filterCategory,
       source: filterSource,
       page,
+      sortOrder,
     },
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: false }
   );
 
   const handlePageChange = useCallback(
@@ -43,7 +53,6 @@ const Home: React.FC = () => {
   const handleDateChange = useCallback(
     (from: string, to: string) => {
       dispatch(setDateRange({ from, to }));
-      dispatch(setPage(1));
     },
     [dispatch]
   );
@@ -51,7 +60,6 @@ const Home: React.FC = () => {
   const handleCategoryChange = useCallback(
     (cat: string) => {
       dispatch(setFilterCategory(cat));
-      dispatch(setPage(1));
     },
     [dispatch]
   );
@@ -59,7 +67,6 @@ const Home: React.FC = () => {
   const handleSourceChange = useCallback(
     (src: string) => {
       dispatch(setFilterSource(src));
-      dispatch(setPage(1));
     },
     [dispatch]
   );
@@ -67,7 +74,13 @@ const Home: React.FC = () => {
   const handleSearchChange = useCallback(
     (term: string) => {
       dispatch(setSearchTerm(term));
-      dispatch(setPage(1));
+    },
+    [dispatch]
+  );
+
+  const handleSortChange = useCallback(
+    (sort: SortOrder) => {
+      dispatch(setSortOrder(sort));
     },
     [dispatch]
   );
@@ -93,9 +106,11 @@ const Home: React.FC = () => {
         toDate={toDate}
         category={filterCategory}
         source={filterSource}
+        sortOrder={sortOrder}
         onDateChange={handleDateChange}
         onCategoryChange={handleCategoryChange}
         onSourceChange={handleSourceChange}
+        onSortChange={handleSortChange}
       />
 
       <NewsFeed
@@ -111,6 +126,7 @@ const Home: React.FC = () => {
             totalResults={data?.totalResults ?? 0}
             combinedPageSize={data?.combinedPageSize ?? 0}
             onPageChange={handlePageChange}
+            disabled={isLoading || isFetching}
           />
         </div>
       )}

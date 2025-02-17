@@ -43,6 +43,7 @@ type PaginationLinkProps = {
 const PaginationLink = ({
   className,
   isActive,
+  disabled,
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
@@ -55,6 +56,7 @@ const PaginationLink = ({
         size,
       }),
       isActive && "bg-primary text-primary-foreground",
+      disabled ? "pointer-events-none cursor-not-allowed opacity-50" : "",
       className
     )}
     {...props}

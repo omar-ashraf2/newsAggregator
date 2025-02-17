@@ -25,7 +25,7 @@ import {
 } from "@/features/services";
 
 // Constants
-export const PAGE_SIZE_PER_SOURCE = 12;
+export const PAGE_SIZE_PER_SOURCE = 10;
 const MAX_PAGE = 100;
 
 // Type guards
@@ -59,8 +59,15 @@ export const articlesApi = createApi({
     >({
       async queryFn(params, api, extraOptions, baseQuery) {
         try {
-          const { searchTerm, fromDate, toDate, category, source, page } =
-            params;
+          const {
+            searchTerm,
+            fromDate,
+            toDate,
+            category,
+            source,
+            page,
+            sortOrder,
+          } = params;
 
           // Ensure page is in valid range:
           const clampedPage = Math.max(1, Math.min(page, MAX_PAGE));
@@ -93,6 +100,7 @@ export const articlesApi = createApi({
                     fromDate,
                     toDate,
                     category,
+                    sortOrder,
                     clampedPage,
                     PAGE_SIZE_PER_SOURCE
                   )),
@@ -108,6 +116,7 @@ export const articlesApi = createApi({
                     category,
                     fromDate,
                     toDate,
+                    sortOrder,
                     clampedPage,
                     PAGE_SIZE_PER_SOURCE
                   )),
@@ -121,7 +130,9 @@ export const articlesApi = createApi({
                     extraOptions,
                     searchTerm,
                     fromDate,
+                    toDate,
                     category,
+                    sortOrder,
                     clampedPage
                   )),
                 };
@@ -194,7 +205,7 @@ export const articlesApi = createApi({
           }
 
           // Now merge and sort all articles by date desc
-          const mergedArticles = mergeAndSortArticles(allArticles);
+          const mergedArticles = mergeAndSortArticles(allArticles, sortOrder);
 
           return {
             data: {
@@ -213,6 +224,7 @@ export const articlesApi = createApi({
           };
         }
       },
+      keepUnusedDataFor: 120,
     }),
   }),
 });

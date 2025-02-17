@@ -12,7 +12,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CATEGORIES } from "@/constants/categories";
+import { SORT_OPTIONS } from "@/constants/sortOrder";
 import { SOURCES } from "@/constants/sources";
+import { SortOrder } from "@/features/filters/filterSlice";
 import { cn } from "@/lib/utils";
 
 interface FilterPanelProps {
@@ -20,9 +22,11 @@ interface FilterPanelProps {
   toDate: string;
   category: string;
   source: string;
+  sortOrder: SortOrder;
   onDateChange: (from: string, to: string) => void;
   onCategoryChange: (value: string) => void;
   onSourceChange: (value: string) => void;
+  onSortChange: (value: SortOrder) => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -30,9 +34,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   toDate,
   category,
   source,
+  sortOrder,
   onDateChange,
   onCategoryChange,
   onSourceChange,
+  onSortChange,
 }) => {
   const [date, setDate] = useState<DateRange | undefined>(
     fromDate && toDate
@@ -49,7 +55,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 my-4">
+    <div className="flex flex-col md:flex-row gap-4 my-4 items-start">
+      {/* Date range */}
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -79,6 +86,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </PopoverContent>
       </Popover>
 
+      {/* Category */}
       <DropdownSelect
         value={category}
         options={CATEGORIES}
@@ -86,11 +94,20 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         placeholder="Select category"
       />
 
+      {/* Source */}
       <DropdownSelect
         value={source}
         options={SOURCES}
         onChange={onSourceChange}
         placeholder="Select source"
+      />
+
+      {/* Sort Order */}
+      <DropdownSelect
+        value={sortOrder}
+        options={SORT_OPTIONS}
+        onChange={(val) => onSortChange(val as SortOrder)}
+        placeholder="Select sort order"
       />
     </div>
   );

@@ -5,4 +5,5 @@ export interface FetchArticlesParams {
   category: string;
   source: string;
   page: number;
+  sortOrder: "newest" | "oldest" | "relevance";
 }

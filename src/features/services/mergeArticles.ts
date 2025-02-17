@@ -81,15 +81,31 @@ export function transformNYTimesData(
   });
 }
 
-/** Merge arrays & sort newest first. */
-export function mergeAndSortArticles(articles: Article[]): Article[] {
-  return articles
-    .filter(
-      (article) =>
-        article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())
-    )
-    .sort(
+/** Merge arrays & sort */
+export function mergeAndSortArticles(
+  articles: Article[],
+  sortOrder: "newest" | "oldest" | "relevance"
+): Article[] {
+  // Filter out invalid or missing dates
+  const validArticles = articles.filter(
+    (article) =>
+      article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())
+  );
+
+  if (sortOrder === "newest") {
+    return validArticles.sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
+  } else if (sortOrder === "oldest") {
+    return validArticles.sort(
+      (a, b) =>
+        new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+    );
+  } else {
+    return validArticles.sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
+  }
 }

@@ -15,6 +15,7 @@ interface PaginationControlsProps {
   totalResults: number;
   combinedPageSize: number;
   onPageChange: (page: number) => void;
+  disabled?: boolean;
 }
 const MAX_UI_PAGES = 100;
 
@@ -23,6 +24,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   totalResults,
   combinedPageSize,
   onPageChange,
+  disabled,
 }) => {
   const totalPages = useMemo(() => {
     if (!totalResults) return 1;
@@ -56,7 +58,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <PaginationItem>
           <PaginationPrevious
             onClick={goToPrevPage}
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || disabled}
           />
         </PaginationItem>
 
@@ -70,6 +72,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
               <PaginationLink
                 onClick={() => onPageChange(item)}
                 isActive={item === currentPage}
+                disabled={disabled}
               >
                 {item}
               </PaginationLink>
@@ -80,7 +83,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <PaginationItem>
           <PaginationNext
             onClick={goToNextPage}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || disabled}
           />
         </PaginationItem>
       </PaginationContent>

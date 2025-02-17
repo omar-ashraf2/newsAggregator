@@ -1,6 +1,8 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import BackToTopButton from "@/components/common/BackToTopButton";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import ScrollToTopConnected from "@/components/common/ScrollToTopConnected";
 import { Outlet, useNavigation } from "react-router-dom";
 
 const App: React.FC = () => {
@@ -13,11 +15,13 @@ const App: React.FC = () => {
           <LoadingScreen />
         </div>
       )}
+      <ScrollToTopConnected />
       <Navbar />
       <main className="flex-1">
         <Outlet />
       </main>
       <Footer />
+      <BackToTopButton />
     </div>
   );
 };

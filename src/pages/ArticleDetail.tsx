@@ -43,12 +43,13 @@ const ArticleDetail: React.FC = () => {
   const { data: relatedData, isLoading: relatedLoading } =
     useFetchArticlesQuery(
       {
-        searchTerm: state?.article?.publisher || "",
+        searchTerm: "",
         fromDate: "",
         toDate: "",
         category: "all",
         source: state?.article?.source || "all",
         page: 1,
+        sortOrder: "newest",
       },
       { refetchOnMountOrArgChange: true }
     );
@@ -65,7 +66,7 @@ const ArticleDetail: React.FC = () => {
   return (
     <div className="bg-background min-h-screen px-6 py-10">
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate(-1)}
         className="mb-6 inline-flex items-center space-x-2 hover:text-primary/85 transition"
         aria-label="Go back"
       >
@@ -134,7 +135,7 @@ const ArticleDetail: React.FC = () => {
           You Might Also Like
         </h3>
         {relatedLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }, (_, idx) => (
               <ArticleSkeleton key={idx} />
             ))}

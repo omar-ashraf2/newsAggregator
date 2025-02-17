@@ -39,7 +39,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         "hover:shadow-2xl hover:-translate-y-1 active:scale-95"
       )}
     >
-      <div className="relative w-full h-56">
+      <div className="relative w-full h-64">
         <img
           src={article.imageUrl || placeholderImage}
           alt={article.title}
