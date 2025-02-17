@@ -1,58 +1,38 @@
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
-
+import { RootState } from "@/app/store";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import DropdownSelect from "@/components/ui/DropdownSelect";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CATEGORIES } from "@/constants/categories";
-import { SORT_OPTIONS } from "@/constants/sortOrder";
-import { SOURCES } from "@/constants/sources";
-import { SortOrder } from "@/features/filters/filterSlice";
+import { CATEGORIES, SORT_OPTIONS, SOURCES } from "@/constants";
+import {
+  setDateRange,
+  setFilterCategory,
+  setFilterSource,
+  setSortOrder,
+} from "@/features/filters/filterSlice";
 import { cn } from "@/lib/utils";
+import { SortOrder } from "@/types/SortOrder";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
+import { useDispatch, useSelector } from "react-redux";
+import { DropdownSelect } from "./common";
 
-interface FilterPanelProps {
-  fromDate: string;
-  toDate: string;
-  category: string;
-  source: string;
-  sortOrder: SortOrder;
-  onDateChange: (from: string, to: string) => void;
-  onCategoryChange: (value: string) => void;
-  onSourceChange: (value: string) => void;
-  onSortChange: (value: SortOrder) => void;
-}
+const FilterPanel: React.FC = () => {
+  const dispatch = useDispatch();
+  const { fromDate, toDate, category, source, sortOrder } = useSelector(
+    (state: RootState) => state.filters
+  );
 
-const FilterPanel: React.FC<FilterPanelProps> = ({
-  fromDate,
-  toDate,
-  category,
-  source,
-  sortOrder,
-  onDateChange,
-  onCategoryChange,
-  onSourceChange,
-  onSortChange,
-}) => {
   const [date, setDate] = useState<DateRange | undefined>(
     fromDate && toDate
       ? { from: new Date(fromDate), to: new Date(toDate) }
       : undefined
   );
-
-  const handleDateChange = (newDate: DateRange | undefined) => {
-    setDate(newDate);
-    onDateChange(
-      newDate?.from ? format(newDate.from, "yyyy-MM-dd") : "",
-      newDate?.to ? format(newDate.to, "yyyy-MM-dd") : ""
-    );
-  };
 
   return (
     <div className="flex flex-col md:flex-row gap-4 my-4 items-start">
@@ -80,33 +60,38 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={handleDateChange}
+            onSelect={(newDate) => {
+              setDate(newDate);
+              dispatch(
+                setDateRange({
+                  from: newDate?.from ? format(newDate.from, "yyyy-MM-dd") : "",
+                  to: newDate?.to ? format(newDate.to, "yyyy-MM-dd") : "",
+                })
+              );
+            }}
             numberOfMonths={2}
           />
         </PopoverContent>
       </Popover>
-
       {/* Category */}
       <DropdownSelect
         value={category}
         options={CATEGORIES}
-        onChange={onCategoryChange}
+        onChange={(value) => dispatch(setFilterCategory(value))}
         placeholder="Select category"
       />
-
       {/* Source */}
       <DropdownSelect
         value={source}
         options={SOURCES}
-        onChange={onSourceChange}
+        onChange={(value) => dispatch(setFilterSource(value))}
         placeholder="Select source"
       />
-
       {/* Sort Order */}
       <DropdownSelect
         value={sortOrder}
         options={SORT_OPTIONS}
-        onChange={(val) => onSortChange(val as SortOrder)}
+        onChange={(value) => dispatch(setSortOrder(value as SortOrder))}
         placeholder="Select sort order"
       />
     </div>

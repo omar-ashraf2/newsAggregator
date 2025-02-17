@@ -12,9 +12,9 @@ import type { NewsAPIResponse } from "@/types/NewsAPI";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 
 // API calls for each source
-import { guardianApi } from "@/features/services/guardianApi";
-import { newsApi } from "@/features/services/newsApi";
-import { nyTimesApi } from "@/features/services/nyTimesApi";
+import { guardianApi } from "./guardianApi";
+import { newsApi } from "./newsApi";
+import { nyTimesApi } from "./nyTimesApi";
 
 // Utility transforms
 import {
@@ -22,7 +22,7 @@ import {
   transformGuardianData,
   transformNewsAPIData,
   transformNYTimesData,
-} from "@/features/services";
+} from "./mergeArticles";
 
 // Constants
 export const PAGE_SIZE_PER_SOURCE = 10;

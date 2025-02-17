@@ -4,7 +4,7 @@ interface EmptyScreenProps {
 
 const EmptyScreen: React.FC<EmptyScreenProps> = ({ message }) => {
   return (
-    <div className="flex flex-col justify-center items-center h-[calc(100vh-500px)] bg-background">
+    <div className="flex flex-col justify-center items-center h-[calc(100vh-400px)] bg-background">
       <div className="w-32 h-32 mb-4">
         <svg
           className="w-full h-full text-muted-foreground"

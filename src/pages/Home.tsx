@@ -1,88 +1,19 @@
-import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
 import { RootState } from "@/app/store";
-import FilterPanel from "@/components/FilterPanel";
-import NewsFeed from "@/components/NewsFeed";
-import PaginationControls from "@/components/PaginationControls";
-import SearchBar from "@/components/SearchBar";
-
+import { FilterPanel, NewsFeed, PaginationControls } from "@/components";
+import { SearchBar } from "@/components/common";
 import { useFetchArticlesQuery } from "@/features/articles/articlesApi";
-import type { SortOrder } from "@/features/filters/filterSlice";
-import {
-  setDateRange,
-  setFilterCategory,
-  setFilterSource,
-  setPage,
-  setSearchTerm,
-  setSortOrder,
-} from "@/features/filters/filterSlice";
+import { setPage } from "@/features/filters/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
-  const {
-    searchTerm,
-    fromDate,
-    toDate,
-    filterCategory,
-    filterSource,
-    page,
-    sortOrder,
-  } = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters);
 
   const { data, isLoading, isFetching, error } = useFetchArticlesQuery(
+    filters,
     {
-      searchTerm,
-      fromDate,
-      toDate,
-      category: filterCategory,
-      source: filterSource,
-      page,
-      sortOrder,
-    },
-    { refetchOnMountOrArgChange: false }
-  );
-
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      dispatch(setPage(newPage));
-    },
-    [dispatch]
-  );
-
-  const handleDateChange = useCallback(
-    (from: string, to: string) => {
-      dispatch(setDateRange({ from, to }));
-    },
-    [dispatch]
-  );
-
-  const handleCategoryChange = useCallback(
-    (cat: string) => {
-      dispatch(setFilterCategory(cat));
-    },
-    [dispatch]
-  );
-
-  const handleSourceChange = useCallback(
-    (src: string) => {
-      dispatch(setFilterSource(src));
-    },
-    [dispatch]
-  );
-
-  const handleSearchChange = useCallback(
-    (term: string) => {
-      dispatch(setSearchTerm(term));
-    },
-    [dispatch]
-  );
-
-  const handleSortChange = useCallback(
-    (sort: SortOrder) => {
-      dispatch(setSortOrder(sort));
-    },
-    [dispatch]
+      refetchOnMountOrArgChange: false,
+    }
   );
 
   return (
@@ -90,7 +21,7 @@ const Home: React.FC = () => {
       <header className="py-28">
         <h1 className="flex flex-col justify-center items-center text-6xl font-bold mb-4 text-foreground uppercase">
           <span>Get Informed</span>
-          <span className="border-b-[12px] border-b-[#f52828] w-max">
+          <span className="border-b-[12px] border-b-[#811211] w-max">
             Get Inspired
           </span>
         </h1>
@@ -99,20 +30,8 @@ const Home: React.FC = () => {
         </h2>
       </header>
 
-      <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-
-      <FilterPanel
-        fromDate={fromDate}
-        toDate={toDate}
-        category={filterCategory}
-        source={filterSource}
-        sortOrder={sortOrder}
-        onDateChange={handleDateChange}
-        onCategoryChange={handleCategoryChange}
-        onSourceChange={handleSourceChange}
-        onSortChange={handleSortChange}
-      />
-
+      <SearchBar />
+      <FilterPanel />
       <NewsFeed
         articles={data?.articles ?? []}
         isLoading={isLoading || isFetching}
@@ -122,10 +41,10 @@ const Home: React.FC = () => {
       {!!data?.articles?.length && (
         <div className="mt-6 flex justify-center">
           <PaginationControls
-            currentPage={page}
+            currentPage={filters.page}
             totalResults={data?.totalResults ?? 0}
             combinedPageSize={data?.combinedPageSize ?? 0}
-            onPageChange={handlePageChange}
+            onPageChange={(newPage) => dispatch(setPage(newPage))}
             disabled={isLoading || isFetching}
           />
         </div>

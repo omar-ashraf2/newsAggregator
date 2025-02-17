@@ -1,13 +1,12 @@
+import { SortOrder } from "@/types/SortOrder";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type SortOrder = "newest" | "oldest" | "relevance";
-
-export interface FilterState {
+interface FilterState {
   searchTerm: string;
   fromDate: string;
   toDate: string;
-  filterCategory: string;
-  filterSource: string;
+  category: string;
+  source: string;
   page: number;
   sortOrder: SortOrder;
 }
@@ -16,8 +15,8 @@ const initialState: FilterState = {
   searchTerm: "",
   fromDate: "",
   toDate: "",
-  filterCategory: "all",
-  filterSource: "all",
+  category: "all",
+  source: "all",
   page: 1,
   sortOrder: "newest",
 };
@@ -38,11 +37,11 @@ const filterSlice = createSlice({
       state.page = 1;
     },
     setFilterCategory(state, action: PayloadAction<string>) {
-      state.filterCategory = action.payload;
+      state.category = action.payload;
       state.page = 1;
     },
     setFilterSource(state, action: PayloadAction<string>) {
-      state.filterSource = action.payload;
+      state.source = action.payload;
       state.page = 1;
     },
     setPage(state, action: PayloadAction<number>) {

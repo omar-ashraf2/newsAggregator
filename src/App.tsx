@@ -1,8 +1,10 @@
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import BackToTopButton from "@/components/common/BackToTopButton";
-import LoadingScreen from "@/components/common/LoadingScreen";
-import ScrollToTopConnected from "@/components/common/ScrollToTopConnected";
+import {
+  BackToTopButton,
+  Footer,
+  LoadingScreen,
+  Navbar,
+  ScrollToTopConnected,
+} from "@/components/common";
 import { Outlet, useNavigation } from "react-router-dom";
 
 const App: React.FC = () => {

@@ -29,7 +29,7 @@ export async function newsApi(
   const clampedPage = Math.min(Math.max(page, 1), MAX_PAGE);
 
   const queryParts: string[] = [];
-  const trimmedSearch = searchTerm.trim();
+  const trimmedSearch = searchTerm.trim() || "";
 
   if (trimmedSearch) {
     queryParts.push(trimmedSearch);

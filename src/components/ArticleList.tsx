@@ -1,5 +1,5 @@
-import { Article } from "@/types/Article";
-import ArticleCard from "@/components/ArticleCard";
+import { ArticleCard } from "@/components";
+import type { Article } from "@/types/Article";
 
 interface ArticleListProps {
   articles: Article[];

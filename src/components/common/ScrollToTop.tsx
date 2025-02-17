@@ -13,7 +13,7 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 480, behavior });
+    window.scrollTo({ top: 100, behavior });
   }, [pathname, page, behavior]);
 
   return null;

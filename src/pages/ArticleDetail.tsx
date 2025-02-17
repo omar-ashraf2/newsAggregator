@@ -2,9 +2,8 @@ import guardianLogo from "@/assets/guardianLogo.png";
 import placeholderImage from "@/assets/news-placeholder.webp";
 import newsApiLogo from "@/assets/newsLogo.png";
 import nytLogo from "@/assets/nytLogo.png";
-import ArticleCard from "@/components/ArticleCard";
-import ArticleSkeleton from "@/components/ArticleSkeleton";
-import ErrorMessage from "@/components/ErrorMessage";
+import { ArticleCard, ArticleSkeleton } from "@/components";
+import { EmptyScreen } from "@/components/common";
 import { useFetchArticlesQuery } from "@/features/articles/articlesApi";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowLeftIcon } from "lucide-react";
@@ -55,7 +54,7 @@ const ArticleDetail: React.FC = () => {
     );
 
   if (!state?.article) {
-    return <ErrorMessage message="Article details not found." />;
+    return <EmptyScreen message="Article details not found." />;
   }
 
   const { article } = state;

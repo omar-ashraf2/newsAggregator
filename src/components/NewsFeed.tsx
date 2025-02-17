@@ -1,6 +1,5 @@
-import ArticleList from "@/components/ArticleList";
-import ArticleSkeleton from "@/components/ArticleSkeleton";
-import EmptyScreen from "@/components/common/EmptyScreen";
+import { ArticleList, ArticleSkeleton } from "@/components";
+import { EmptyScreen } from "@/components/common";
 import { Article } from "@/types/Article";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
