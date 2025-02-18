@@ -1,4 +1,14 @@
+/**
+ * guardianApi.ts
+ *
+ * Fetches data from The Guardian `search` endpoint.
+ * - Maps categories to Guardian sections.
+ * - Applies date filters via `from-date` & `to-date`.
+ * - Sort order can be "newest", "oldest", "relevance".
+ */
+
 import type { GuardianResponse } from "@/types/Guardian";
+import { SortOrder } from "@/types/SortOrder";
 import type {
   BaseQueryApi,
   BaseQueryFn,
@@ -28,22 +38,21 @@ export async function guardianApi(
   api: BaseQueryApi,
   extraOptions: Record<string, unknown>,
   searchTerm: string,
-  category: string,
   fromDate: string,
   toDate: string,
-  sortOrder: "newest" | "oldest" | "relevance" = "newest",
+  category: string,
+  sortOrder: SortOrder = "newest",
   page: number,
-  pageSize: number
+  pageSize?: number
 ): Promise<{ data?: GuardianResponse; error?: FetchBaseQueryError }> {
-  // Clamp page
   const clampedPage = Math.min(Math.max(page, 1), MAX_PAGE);
 
+  // Build query
   const q = searchTerm.trim() || "";
   const params: string[] = [];
-
   params.push(`q=${encodeURIComponent(q)}`);
 
-  // If category != "all", map it
+  // Map category => Guardian section
   if (category !== "all") {
     const guardianSection = GUARDIAN_CATEGORY_MAP[category];
     if (guardianSection) {
@@ -51,15 +60,15 @@ export async function guardianApi(
     }
   }
 
-  // Date filters
+  // date filters
   if (fromDate) params.push(`from-date=${fromDate}`);
   if (toDate) params.push(`to-date=${toDate}`);
 
+  // orderBy => "newest", "oldest", or "relevance"
   let orderBy = "newest";
   if (sortOrder === "oldest") orderBy = "oldest";
   if (sortOrder === "relevance") orderBy = "relevance";
 
-  // Page, page-size, etc.
   params.push(`page=${clampedPage}`);
   params.push(`page-size=${pageSize}`);
   params.push(`order-by=${orderBy}`);
@@ -69,7 +78,8 @@ export async function guardianApi(
   const url = `${GUARDIAN_BASE_URL}/search?${params.join("&")}`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
-  if (result.error) return { error: result.error };
-
+  if (result.error) {
+    return { error: result.error };
+  }
   return { data: result.data as GuardianResponse };
 }

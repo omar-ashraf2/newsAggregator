@@ -1,4 +1,12 @@
-const Footer: React.FC = () => {
+/**
+ * Footer.tsx
+ *
+ * A footer with social links and a copyright notice.
+ */
+
+import { memo } from "react";
+
+const Footer = memo(() => {
   return (
     <footer className="bg-background border-t border-border">
       <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
@@ -41,6 +49,7 @@ const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});
 
+Footer.displayName = "Footer";
 export default Footer;

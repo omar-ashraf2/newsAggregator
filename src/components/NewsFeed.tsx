@@ -1,8 +1,14 @@
+/**
+ * NewsFeed.tsx
+ *
+ * Shows either loading skeletons, an error, no results, or the article list.
+ */
 import { ArticleList, ArticleSkeleton } from "@/components";
 import { EmptyScreen } from "@/components/common";
 import { Article } from "@/types/Article";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { memo } from "react";
 
 interface NewsFeedProps {
   articles: Article[];
@@ -10,7 +16,7 @@ interface NewsFeedProps {
   error?: FetchBaseQueryError | SerializedError;
 }
 
-const NewsFeed: React.FC<NewsFeedProps> = ({ articles, isLoading, error }) => {
+const NewsFeed = memo<NewsFeedProps>(({ articles, isLoading, error }) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -30,6 +36,7 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ articles, isLoading, error }) => {
   }
 
   return <ArticleList articles={articles} />;
-};
+});
 
+NewsFeed.displayName = "NewsFeed";
 export default NewsFeed;

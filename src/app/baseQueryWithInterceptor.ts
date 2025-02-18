@@ -1,3 +1,11 @@
+/**
+ * baseQueryWithInterceptor.ts
+ *
+ * This file extends RTK Query's `fetchBaseQuery` by adding:
+ *  - A switch statement for custom error messages
+ *  - A toast notification for user-facing feedback
+ */
+
 import { toast } from "@/hooks/use-toast";
 import type {
   BaseQueryFn,
@@ -6,10 +14,17 @@ import type {
 } from "@reduxjs/toolkit/query";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+/**
+ * Underlying base query from RTK Query.
+ * We set .env for baseUrl.
+ */
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: "",
 });
 
+/**
+ * Our interceptor that checks for errors and shows friendly messages.
+ */
 export const baseQueryWithInterceptor: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -20,12 +35,13 @@ export const baseQueryWithInterceptor: BaseQueryFn<
   if (result.error) {
     const err = result.error as FetchBaseQueryError;
 
-    // Extract API error message if available
+    // Safely extract API message, if available
     const apiMessage =
       typeof err.data === "object" && err.data !== null && "message" in err.data
         ? (err.data as { message?: string }).message
         : null;
 
+    // Default fallback
     let friendlyMessage = "An unexpected error occurred. Please try again.";
 
     switch (err.status) {

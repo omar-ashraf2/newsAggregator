@@ -1,15 +1,21 @@
+/**
+ * SearchBar.tsx
+ *
+ * A debounced search input that updates Redux after 1s.
+ */
+
 import { RootState } from "@/app/store";
 import { setSearchTerm } from "@/features/filters/filterSlice";
 import { Search } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const SearchBar: React.FC = () => {
+const SearchBar = memo(() => {
   const dispatch = useDispatch();
-  const searchTerm = useSelector(
+  const reduxSearchTerm = useSelector(
     (state: RootState) => state.filters.searchTerm
   );
-  const [inputValue, setInputValue] = useState(searchTerm);
+  const [inputValue, setInputValue] = useState(reduxSearchTerm);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -20,8 +26,7 @@ const SearchBar: React.FC = () => {
   }, [inputValue, dispatch]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // Remove all special characters, allowing only letters, numbers, and spaces (max 70 chars).
-
+    // Remove all special chars & limit length to 70
     let sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
     if (sanitizedValue.length > 70) {
       sanitizedValue = sanitizedValue.substring(0, 70);
@@ -38,13 +43,13 @@ const SearchBar: React.FC = () => {
         onChange={handleChange}
         className="w-full pl-10 pr-4 py-3 rounded-lg bg-background text-foreground border border-border shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-primary focus:shadow-lg"
       />
-
       <Search
         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground transition-all"
         size={20}
       />
     </div>
   );
-};
+});
 
+SearchBar.displayName = "SearchBar";
 export default SearchBar;

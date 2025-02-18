@@ -1,3 +1,5 @@
+import { SortOrder } from "./SortOrder";
+
 export interface FetchArticlesParams {
   searchTerm: string;
   fromDate: string;
@@ -5,5 +7,5 @@ export interface FetchArticlesParams {
   category: string;
   source: string;
   page: number;
-  sortOrder: "newest" | "oldest" | "relevance";
+  sortOrder: SortOrder;
 }

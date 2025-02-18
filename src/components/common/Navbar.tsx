@@ -1,7 +1,14 @@
+/**
+ * Navbar.tsx
+ *
+ * Displays a navigation bar with a brand logo and the theme toggle.
+ */
+
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import ModeToggle from "./ModeToggle";
 
-const Navbar: React.FC = () => {
+const Navbar = memo(() => {
   return (
     <nav className="bg-background shadow-lg z-10 border-b">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -22,6 +29,7 @@ const Navbar: React.FC = () => {
       </div>
     </nav>
   );
-};
+});
 
+Navbar.displayName = "Navbar";
 export default Navbar;

@@ -1,3 +1,10 @@
+/**
+ * router.ts
+ *
+ * Single Responsibility:
+ *  - Defines the application’s routes and nested routes.
+ */
+
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import ArticleDetail from "./pages/ArticleDetail";

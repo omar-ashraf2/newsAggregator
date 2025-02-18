@@ -1,3 +1,10 @@
+/**
+ * ArticleCard.tsx
+ *
+ * Displays a single article card:
+ *  - Fetches "related articles" from the aggregator (RTK Query).
+ */
+
 import guardianLogo from "@/assets/guardianLogo.png";
 import placeholderImage from "@/assets/news-placeholder.webp";
 import newsApiLogo from "@/assets/newsLogo.png";
@@ -5,6 +12,7 @@ import nytLogo from "@/assets/nytLogo.png";
 import { cn } from "@/lib/utils";
 import { Article } from "@/types/Article";
 import { formatDistanceToNow } from "date-fns";
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const sourceLogos: Record<string, string> = {
@@ -22,7 +30,7 @@ interface ArticleCardProps {
   article: Article;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleCard = memo<ArticleCardProps>(({ article }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -43,7 +51,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <img
           src={article.imageUrl || placeholderImage}
           alt={article.title}
+          loading="lazy"
           className="w-full h-full object-cover rounded-xl transition-opacity duration-300 hover:opacity-90"
+          onError={(e) => {
+            e.currentTarget.src = placeholderImage;
+          }}
         />
       </div>
 
@@ -62,6 +74,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
               alt={article.source}
               title={article.source}
               className="h-8 object-contain dark:invert"
+              loading="lazy"
             />
           ) : (
             <span className="text-xs text-muted-foreground">
@@ -76,6 +89,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       </div>
     </div>
   );
-};
+});
 
+ArticleCard.displayName = "ArticleCard";
 export default ArticleCard;

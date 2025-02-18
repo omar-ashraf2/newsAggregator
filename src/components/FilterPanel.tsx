@@ -1,3 +1,15 @@
+/**
+ * FilterPanel.tsx
+ *
+ * Renders various filter controls:
+ *  - Date range picker
+ *  - Category dropdown
+ *  - Source dropdown
+ *  - Sort order dropdown
+ *
+ * Single Responsibility: manage user filter inputs & dispatch them to Redux.
+ */
+
 import { RootState } from "@/app/store";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -73,6 +85,7 @@ const FilterPanel: React.FC = () => {
           />
         </PopoverContent>
       </Popover>
+
       {/* Category */}
       <DropdownSelect
         value={category}

@@ -1,8 +1,16 @@
+/**
+ * EmptyScreen.tsx
+ *
+ * A simple component to show a "no results" or "empty" state.
+ */
+
+import { memo } from "react";
+
 interface EmptyScreenProps {
   message: string;
 }
 
-const EmptyScreen: React.FC<EmptyScreenProps> = ({ message }) => {
+const EmptyScreen = memo<EmptyScreenProps>(({ message }) => {
   return (
     <div className="flex flex-col justify-center items-center h-[calc(100vh-400px)] bg-background">
       <div className="w-32 h-32 mb-4">
@@ -42,6 +50,7 @@ const EmptyScreen: React.FC<EmptyScreenProps> = ({ message }) => {
       </p>
     </div>
   );
-};
+});
 
+EmptyScreen.displayName = "EmptyScreen";
 export default EmptyScreen;

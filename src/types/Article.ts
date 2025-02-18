@@ -6,4 +6,5 @@ export interface Article {
   imageUrl?: string | null;
   publishedAt: string;
   source: string;
+  publisher?: string;
 }

@@ -1,4 +1,13 @@
+/**
+ * newsApi.ts
+ *
+ * Fetches data from NewsAPI's "everything" endpoint.
+ * - Accepts search params for date range, category, sort order, etc.
+ * - Clamps page to avoid out-of-range queries.
+ */
+
 import type { NewsAPIResponse } from "@/types/NewsAPI";
+import { SortOrder } from "@/types/SortOrder";
 import type {
   BaseQueryApi,
   BaseQueryFn,
@@ -22,12 +31,13 @@ export async function newsApi(
   fromDate: string,
   toDate: string,
   category: string,
-  sortOrder: "newest" | "oldest" | "relevance" = "newest",
+  sortOrder: SortOrder = "newest",
   page: number,
-  pageSize: number
+  pageSize?: number
 ): Promise<{ data?: NewsAPIResponse; error?: FetchBaseQueryError }> {
   const clampedPage = Math.min(Math.max(page, 1), MAX_PAGE);
 
+  // Build the search query
   const queryParts: string[] = [];
   const trimmedSearch = searchTerm.trim() || "";
 
@@ -35,6 +45,7 @@ export async function newsApi(
     queryParts.push(trimmedSearch);
   }
   if (category !== "all") {
+    // Simulate category by adding it to the query (since NewsAPI doesn't do category for "everything")
     queryParts.push(category);
   }
 
@@ -44,16 +55,19 @@ export async function newsApi(
 
   const finalQuery = queryParts.join(" ");
 
+  // Build query params
   const params: string[] = [];
   params.push(`q=${encodeURIComponent(finalQuery)}`);
 
   if (fromDate) params.push(`from=${fromDate}`);
   if (toDate) params.push(`to=${toDate}`);
 
+  // NewsAPI "sortBy" => "publishedAt", "relevancy"
   let sortParam = "publishedAt";
   if (sortOrder === "relevance") {
     sortParam = "relevancy";
   }
+  // There's no built-in "oldest" param in NewsAPI => we fallback to "publishedAt".
 
   params.push(`sortBy=${sortParam}`);
   params.push(`page=${clampedPage}`);
@@ -63,7 +77,8 @@ export async function newsApi(
   const url = `${NEWSAPI_BASE_URL}/everything?${params.join("&")}`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
-
-  if (result.error) return { error: result.error };
+  if (result.error) {
+    return { error: result.error };
+  }
   return { data: result.data as NewsAPIResponse };
 }

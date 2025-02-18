@@ -1,4 +1,14 @@
+/**
+ * nyTimesApi.ts
+ *
+ * Fetches data from The New York Times (articlesearch.json).
+ * - Maps user-friendly category to `news_desk`.
+ * - Clamps page, zero-based indexing.
+ * - Handles sort order via "newest", "oldest", or "best" (for relevance).
+ */
+
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
+import { SortOrder } from "@/types/SortOrder";
 import type {
   BaseQueryApi,
   BaseQueryFn,
@@ -9,6 +19,9 @@ const MAX_PAGE = 100;
 const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
 const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
 
+/**
+ * Maps our user categories to The New York Times "news_desk" values.
+ */
 const NYT_CATEGORY_MAP: Record<string, string> = {
   business: "Business",
   technology: "Technology",
@@ -31,19 +44,19 @@ export async function nyTimesApi(
   fromDate: string,
   toDate: string,
   category: string,
-  sortOrder: "newest" | "oldest" | "relevance" = "newest",
+  sortOrder: SortOrder = "newest",
   page: number
 ): Promise<{ data?: NYTimesResponseWrapper; error?: FetchBaseQueryError }> {
-  // Convert 1-based page to 0-based
+  // convert 1-based page => 0-based
   const clampedPage = Math.min(Math.max(page, 1), MAX_PAGE) - 1;
   const zeroBasedPage = clampedPage < 0 ? 0 : clampedPage;
 
   const query = encodeURIComponent(searchTerm.trim() || "");
 
   const params: string[] = [];
-
   params.push(`q=${query}`);
 
+  // date filters => begin_date / end_date in YYYYMMDD
   if (fromDate) {
     params.push(`begin_date=${fromDate.replace(/-/g, "")}`);
   }
@@ -59,11 +72,14 @@ export async function nyTimesApi(
     }
   }
 
+  // sort => "newest", "oldest", or "best" for relevance
   let sortParam = "newest";
-  if (sortOrder === "oldest") sortParam = "oldest";
-  if (sortOrder === "relevance") sortParam = "best";
+  if (sortOrder === "oldest") {
+    sortParam = "oldest";
+  } else if (sortOrder === "relevance") {
+    sortParam = "best";
+  }
 
-  // Sort, pagination, API key
   params.push(`sort=${sortParam}`);
   params.push(`page=${zeroBasedPage}`);
   params.push(`api-key=${NYTIMES_KEY}`);
@@ -71,7 +87,8 @@ export async function nyTimesApi(
   const url = `${NYTIMES_BASE_URL}/articlesearch.json?${params.join("&")}`;
 
   const result = await baseQuery({ url, method: "GET" }, api, extraOptions);
-  if (result.error) return { error: result.error };
-
+  if (result.error) {
+    return { error: result.error };
+  }
   return { data: result.data as NYTimesResponseWrapper };
 }

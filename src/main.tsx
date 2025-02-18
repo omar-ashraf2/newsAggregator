@@ -1,17 +1,30 @@
-import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/contexts/theme-provider";
+/**
+ * main.tsx
+ *
+ * This is our composition root: It bootstraps React, Redux, theming,
+ * and routing in a single place.
+ */
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { persistor, store } from "./app/store";
-
-import { LoadingScreen } from "@/components/common";
 import { RouterProvider } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
-import "./index.css";
+
+import { LoadingScreen } from "@/components/common";
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/contexts/theme-provider";
+import { persistor, store } from "./app/store";
 import { router } from "./router";
 
-createRoot(document.getElementById("root")!).render(
+import "./index.css";
+
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  throw new Error("Root element not found.");
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={<LoadingScreen />} persistor={persistor}>

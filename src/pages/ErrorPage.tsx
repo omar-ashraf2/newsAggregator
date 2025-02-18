@@ -1,3 +1,9 @@
+/**
+ * ErrorPage.tsx
+ *
+ * Displays a full-screen error UI with an option to go back home.
+ */
+
 import { Link } from "react-router-dom";
 
 const ErrorPage: React.FC = () => {

@@ -1,3 +1,11 @@
+/**
+ * PaginationControls.tsx
+ *
+ * Renders pagination UI:
+ *  - If total pages <= 1 => returns null
+ *  - Else => shows items, next/prev
+ */
+
 import {
   Pagination,
   PaginationContent,

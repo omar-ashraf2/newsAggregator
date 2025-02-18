@@ -1,3 +1,12 @@
+/**
+ * Home.tsx
+ *
+ * The main page:
+ *  - Renders header, search, filters
+ *  - Fetches articles (RTK Query) => pass to NewsFeed
+ *  - Paginates
+ */
+
 import { RootState } from "@/app/store";
 import { FilterPanel, NewsFeed, PaginationControls } from "@/components";
 import { SearchBar } from "@/components/common";
@@ -9,6 +18,7 @@ const Home: React.FC = () => {
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.filters);
 
+  // RTK Query fetch
   const { data, isLoading, isFetching, error } = useFetchArticlesQuery(
     filters,
     {
@@ -32,6 +42,7 @@ const Home: React.FC = () => {
 
       <SearchBar />
       <FilterPanel />
+
       <NewsFeed
         articles={data?.articles ?? []}
         isLoading={isLoading || isFetching}

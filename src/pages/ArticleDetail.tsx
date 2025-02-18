@@ -1,3 +1,11 @@
+/**
+ * ArticleDetail.tsx
+ *
+ * Displays a single article in detail:
+ *  - Fetches "related articles" from the aggregator (RTK Query).
+ *  - Shows an image, details, "You Might Also Like" suggestions.
+ */
+
 import guardianLogo from "@/assets/guardianLogo.png";
 import placeholderImage from "@/assets/news-placeholder.webp";
 import newsApiLogo from "@/assets/newsLogo.png";
@@ -7,6 +15,7 @@ import { EmptyScreen } from "@/components/common";
 import { useFetchArticlesQuery } from "@/features/articles/articlesApi";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowLeftIcon } from "lucide-react";
+import { memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface LocationState {
@@ -34,7 +43,7 @@ const getTimeAgo = (dateString: string) => {
   return formatDistanceToNow(date, { addSuffix: true });
 };
 
-const ArticleDetail: React.FC = () => {
+const ArticleDetail = memo(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as LocationState;
@@ -59,6 +68,7 @@ const ArticleDetail: React.FC = () => {
 
   const { article } = state;
 
+  // filter out the same article from the results, just show 4
   const relatedArticles =
     relatedData?.articles.filter((a) => a.id !== article?.id).slice(0, 4) || [];
 
@@ -78,7 +88,11 @@ const ArticleDetail: React.FC = () => {
           <img
             src={article.imageUrl || placeholderImage}
             alt={article.title}
+            loading="lazy"
             className="w-full h-auto object-cover rounded-md shadow-lg"
+            onError={(e) => {
+              e.currentTarget.src = placeholderImage;
+            }}
           />
         </div>
         <div className="flex-1 space-y-3 order-1 md:order-2">
@@ -91,6 +105,7 @@ const ArticleDetail: React.FC = () => {
               src={sourceLogos[article.source] || placeholderImage}
               alt={article.source}
               title={article.source}
+              loading="lazy"
               className="h-8 w-8 object-contain dark:invert"
             />
             <span className="text-amber-600 font-semibold font-serif">
@@ -133,6 +148,7 @@ const ArticleDetail: React.FC = () => {
         <h3 className="text-center text-2xl font-heading font-bold mb-6">
           You Might Also Like
         </h3>
+
         {relatedLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }, (_, idx) => (
@@ -153,6 +169,7 @@ const ArticleDetail: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
+ArticleDetail.displayName = "ArticleDetail";
 export default ArticleDetail;

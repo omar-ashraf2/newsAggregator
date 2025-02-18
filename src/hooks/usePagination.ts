@@ -7,7 +7,8 @@ interface UsePaginationProps {
 }
 
 /**
- * Returns an array of numbers + possible "ellipsis" strings to render a typical pagination range.
+ * Returns an array of numbers + possible "ellipsis" strings
+ * to render a typical pagination range.
  */
 export function usePagination({
   currentPage,

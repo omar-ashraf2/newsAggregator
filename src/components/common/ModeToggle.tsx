@@ -1,4 +1,8 @@
-import { Moon, Sun } from "lucide-react";
+/**
+ * ModeToggle.tsx
+ *
+ * A button that toggles between light/dark/system themes using a dropdown.
+ */
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,8 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/contexts/theme-provider";
+import { Moon, Sun } from "lucide-react";
+import { memo } from "react";
 
-const ModeToggle = () => {
+const ModeToggle = memo(() => {
   const { setTheme } = useTheme();
 
   return (
@@ -34,6 +40,7 @@ const ModeToggle = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
+});
 
+ModeToggle.displayName = "ModeToggle";
 export default ModeToggle;

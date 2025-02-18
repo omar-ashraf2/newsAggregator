@@ -1,7 +1,13 @@
-import { ArrowUpIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+/**
+ * BackToTopButton.tsx
+ *
+ * Shows a button after scrolling down 300px. Clicking it scrolls to the top.
+ */
 
-const BackToTopButton: React.FC = () => {
+import { ArrowUpIcon } from "lucide-react";
+import { memo, useEffect, useState } from "react";
+
+const BackToTopButton = memo(() => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -27,6 +33,7 @@ const BackToTopButton: React.FC = () => {
       <ArrowUpIcon />
     </button>
   );
-};
+});
 
+BackToTopButton.displayName = "BackToTopButton";
 export default BackToTopButton;
