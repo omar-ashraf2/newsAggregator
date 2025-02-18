@@ -72,7 +72,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
         {paginationRange.map((item, idx) =>
           item === "ellipsis" ? (
-            <PaginationItem key={`ellipsis-${idx}`}>
+            <PaginationItem key={`ellipsis-${idx}`} className="hidden sm:flex">
               <PaginationEllipsis />
             </PaginationItem>
           ) : (

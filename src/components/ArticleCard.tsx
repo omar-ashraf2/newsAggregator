@@ -9,9 +9,9 @@ import guardianLogo from "@/assets/guardianLogo.png";
 import placeholderImage from "@/assets/news-placeholder.webp";
 import newsApiLogo from "@/assets/newsLogo.png";
 import nytLogo from "@/assets/nytLogo.png";
+import { getTimeAgo } from "@/lib/dateUtils";
 import { cn } from "@/lib/utils";
 import { Article } from "@/types/Article";
-import { formatDistanceToNow } from "date-fns";
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -19,11 +19,6 @@ const sourceLogos: Record<string, string> = {
   "New York Times": nytLogo,
   "The Guardian": guardianLogo,
   NewsApi: newsApiLogo,
-};
-
-const getTimeAgo = (dateString: string) => {
-  const date = new Date(dateString);
-  return formatDistanceToNow(date, { addSuffix: true });
 };
 
 interface ArticleCardProps {
@@ -60,10 +55,10 @@ const ArticleCard = memo<ArticleCardProps>(({ article }) => {
       </div>
 
       <div className="mt-4">
-        <h2 className="text-xl font-heading font-bold text-foreground leading-snug line-clamp-2">
+        <h2 className="text-base md:text-xl font-heading font-bold text-foreground leading-snug line-clamp-2">
           {article.title}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 line-clamp-3">
+        <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-3">
           {article.description}
         </p>
 
@@ -73,7 +68,7 @@ const ArticleCard = memo<ArticleCardProps>(({ article }) => {
               src={sourceLogos[article.source]}
               alt={article.source}
               title={article.source}
-              className="h-8 object-contain dark:invert"
+              className="h-6 md:h-8 object-contain dark:invert"
               loading="lazy"
             />
           ) : (

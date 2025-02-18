@@ -29,13 +29,13 @@ const Home: React.FC = () => {
   return (
     <div className="container mx-auto min-h-screen bg-background p-4">
       <header className="py-28">
-        <h1 className="flex flex-col justify-center items-center text-6xl font-bold mb-4 text-foreground uppercase">
+        <h1 className="flex flex-col justify-center items-center text-4xl sm:text-6xl font-bold mb-4 text-foreground uppercase">
           <span>Get Informed</span>
           <span className="border-b-[12px] border-b-[#811211] w-max">
             Get Inspired
           </span>
         </h1>
-        <h2 className="text-2xl font-light text-center text-foreground">
+        <h2 className="text-lg sm:text-xl font-light text-center text-foreground">
           Stories Curated For You
         </h2>
       </header>
