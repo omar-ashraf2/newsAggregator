@@ -2,8 +2,6 @@
  * newsApi.ts
  *
  * Fetches data from NewsAPI's "everything" endpoint.
- * - Accepts search params for date range, category, sort order, etc.
- * - Clamps page to avoid out-of-range queries.
  */
 
 import { getEnv } from "@/config";
@@ -17,7 +15,7 @@ import type {
 
 const MAX_PAGE = 50;
 
-/* For Dev */
+/* For Dev (Uncomment to use in dev environment and comment out prod) */
 // const NEWSAPI_BASE_URL = import.meta.env.VITE_NEWSAPI_BASE_URL;
 // const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
 

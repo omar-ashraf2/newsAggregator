@@ -2,9 +2,6 @@
  * nyTimesApi.ts
  *
  * Fetches data from The New York Times (articlesearch.json).
- * - Maps user-friendly category to `news_desk`.
- * - Clamps page, zero-based indexing.
- * - Handles sort order via "newest", "oldest", or "best" (for relevance).
  */
 
 import { getEnv } from "@/config";
@@ -18,7 +15,7 @@ import type {
 
 const MAX_PAGE = 50;
 
-/* For Dev */
+/* For Dev (Uncomment to use in dev environment and comment out prod) */
 // const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
 // const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
 

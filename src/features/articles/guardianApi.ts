@@ -2,9 +2,6 @@
  * guardianApi.ts
  *
  * Fetches data from The Guardian `search` endpoint.
- * - Maps categories to Guardian sections.
- * - Applies date filters via `from-date` & `to-date`.
- * - Sort order can be "newest", "oldest", "relevance".
  */
 
 import { getEnv } from "@/config";
@@ -18,7 +15,7 @@ import type {
 
 const MAX_PAGE = 50;
 
-/* For Dev */
+/* For Dev (Uncomment to use in dev environment and comment out prod) */
 // const GUARDIAN_BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL;
 // const GUARDIAN_KEY = import.meta.env.VITE_GUARDIAN_KEY;
 
