@@ -25,7 +25,7 @@ interface PaginationControlsProps {
   onPageChange: (page: number) => void;
   disabled?: boolean;
 }
-const MAX_UI_PAGES = 100;
+const MAX_UI_PAGES = 50;
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({
   currentPage,

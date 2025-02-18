@@ -25,7 +25,7 @@ import { sourceApiMap } from "./helpers/sourceMap";
 
 // Constants
 export const PAGE_SIZE_PER_SOURCE = 10;
-const MAX_PAGE = 100;
+const MAX_PAGE = 50;
 
 export const articlesApi = createApi({
   reducerPath: "articlesApi",

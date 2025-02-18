@@ -16,7 +16,7 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-const MAX_PAGE = 100;
+const MAX_PAGE = 50;
 
 /* For Dev */
 // const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;

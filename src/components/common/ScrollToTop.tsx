@@ -2,7 +2,7 @@
  * ScrollToTop.tsx
  *
  * Listens for route changes (pathname) or pagination changes,
- * then scrolls window to a chosen Y offset (100 here) with a smooth behavior.
+ * then scrolls window to a chosen Y offset (0 here) with a smooth behavior.
  */
 
 import { memo, useEffect } from "react";
