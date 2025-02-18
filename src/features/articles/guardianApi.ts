@@ -7,6 +7,7 @@
  * - Sort order can be "newest", "oldest", "relevance".
  */
 
+import { getEnv } from "@/config";
 import type { GuardianResponse } from "@/types/Guardian";
 import { SortOrder } from "@/types/SortOrder";
 import type {
@@ -16,8 +17,14 @@ import type {
 } from "@reduxjs/toolkit/query";
 
 const MAX_PAGE = 100;
-const GUARDIAN_BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL;
-const GUARDIAN_KEY = import.meta.env.VITE_GUARDIAN_KEY;
+
+/* For Dev */
+// const GUARDIAN_BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL;
+// const GUARDIAN_KEY = import.meta.env.VITE_GUARDIAN_KEY;
+
+/* For Prod */
+const GUARDIAN_BASE_URL = getEnv("VITE_GUARDIAN_BASE_URL");
+const GUARDIAN_KEY = getEnv("VITE_GUARDIAN_KEY");
 
 const GUARDIAN_CATEGORY_MAP: Record<string, string> = {
   business: "business",

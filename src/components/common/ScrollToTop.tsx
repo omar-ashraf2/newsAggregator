@@ -15,7 +15,7 @@ interface ScrollToTopProps {
 }
 
 const ScrollToTop = memo<ScrollToTopProps>(
-  ({ page, behavior = "smooth", offsetY = 100 }) => {
+  ({ page, behavior = "smooth", offsetY = 0 }) => {
     const { pathname } = useLocation();
 
     useEffect(() => {

@@ -7,6 +7,7 @@
  * - Handles sort order via "newest", "oldest", or "best" (for relevance).
  */
 
+import { getEnv } from "@/config";
 import type { NYTimesResponseWrapper } from "@/types/NYTimes";
 import { SortOrder } from "@/types/SortOrder";
 import type {
@@ -16,8 +17,14 @@ import type {
 } from "@reduxjs/toolkit/query";
 
 const MAX_PAGE = 100;
-const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
-const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
+
+/* For Dev */
+// const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
+// const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
+
+/* For Prod */
+const NYTIMES_BASE_URL = getEnv("VITE_NYTIMES_BASE_URL");
+const NYTIMES_KEY = getEnv("VITE_NYTIMES_KEY");
 
 /**
  * Maps our user categories to The New York Times "news_desk" values.

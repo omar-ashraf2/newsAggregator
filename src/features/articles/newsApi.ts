@@ -6,6 +6,7 @@
  * - Clamps page to avoid out-of-range queries.
  */
 
+import { getEnv } from "@/config";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import { SortOrder } from "@/types/SortOrder";
 import type {
@@ -16,8 +17,13 @@ import type {
 
 const MAX_PAGE = 100;
 
-const NEWSAPI_BASE_URL = import.meta.env.VITE_NEWSAPI_BASE_URL;
-const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
+/* For Dev */
+// const NEWSAPI_BASE_URL = import.meta.env.VITE_NEWSAPI_BASE_URL;
+// const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
+
+/* For Prod */
+const NEWSAPI_BASE_URL = getEnv("VITE_NEWSAPI_BASE_URL");
+const NEWSAPI_KEY = getEnv("VITE_NEWSAPI_KEY");
 
 export async function newsApi(
   baseQuery: BaseQueryFn<
