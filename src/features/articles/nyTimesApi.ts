@@ -15,7 +15,7 @@ import type {
 
 const MAX_PAGE = 50;
 
-/* For Dev (Uncomment to use in dev environment and comment out prod) */
+/* For Dev (Uncomment to use in dev environment and comment out in prod) */
 // const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
 // const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
 

@@ -81,7 +81,7 @@ The application offers an intuitive and efficient news browsing experience with 
    You can find the comments (For Dev) and it will look like the below:
 
    ```js
-   /* For Dev (Uncomment to use in dev environment and comment out prod) */
+   /* For Dev (Uncomment to use in dev environment and comment out in prod) */
    // const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
    // const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
 
