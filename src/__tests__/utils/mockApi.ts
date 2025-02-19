@@ -1,14 +1,25 @@
-import { articlesApi } from "@/features/articles/articlesApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { vi } from "vitest";
+import { beforeEach, vi } from "vitest";
 import { mockArticles } from "./mockData";
+
+const useFetchArticlesQueryMock = vi.fn();
+
+vi.mock("@/features/articles/articlesApi", async () => {
+  const actual = await vi.importActual("@/features/articles/articlesApi");
+  return {
+    ...actual,
+    useFetchArticlesQuery: useFetchArticlesQueryMock,
+  };
+});
 
 export const mockApiResponse = (
   mockData = mockArticles,
   isError = false,
-  errorMessage = "Error fetching articles"
+  errorMessage = "Error fetching articles",
+  customTotalResults?: number,
+  customCombinedPageSize?: number
 ) => {
-  vi.spyOn(articlesApi.endpoints.fetchArticles, "useQuery").mockReturnValue(
+  useFetchArticlesQueryMock.mockReturnValue(
     isError
       ? {
           data: null,
@@ -23,8 +34,8 @@ export const mockApiResponse = (
       : {
           data: {
             articles: mockData,
-            totalResults: mockData.length,
-            combinedPageSize: mockData.length,
+            totalResults: customTotalResults ?? mockData.length,
+            combinedPageSize: customCombinedPageSize ?? mockData.length,
           },
           isLoading: false,
           isFetching: false,
@@ -33,3 +44,7 @@ export const mockApiResponse = (
         }
   );
 };
+
+beforeEach(() => {
+  useFetchArticlesQueryMock.mockReset();
+});
