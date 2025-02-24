@@ -1,9 +1,10 @@
 version: "3.8"
-
 services:
   frontend:
     container_name: vite-nginx-prod
     build: .
     ports:
       - "80:80"
+    env_file:
+      - .env
     restart: always
