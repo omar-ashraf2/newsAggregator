@@ -123,7 +123,7 @@ You can run NexaNews using Docker with the prebuilt image from **Docker Hub**:
 2. **Run the container**
 
    ```sh
-   docker run -d -p 80:80 --name nexanews etdodger1/nexanews:latest
+   docker run -d --name nexanews -p 80:80 etdodger1/nexanews:latest
    ```
 
    - The application will be available at: **[http://localhost](http://localhost)**
