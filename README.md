@@ -8,29 +8,29 @@ NexaNews is a powerful and modern news aggregation app that seamlessly fetches a
 - **The Guardian API**
 - **New York Times API**
 
-The application offers an intuitive and efficient news browsing experience with advanced filtering, sorting, and search capabilities, ensuring users receive the most relevant news updates.
+It provides an intuitive and efficient news browsing experience with **advanced filtering**, **sorting**, and **search** capabilities to ensure users always receive the most relevant updates.
+
+### **Hosted Demo:**
+
+You can try the **live hosted version** here:  
+<https://nexanews-black.vercel.app/>
+
+---
 
 ## Features
 
-✅ **Multi-Source News Aggregation** - Fetches and merges news from **NewsAPI, The Guardian, and The New York Times**.
+- **Multi-Source News Aggregation** – Merges news from **NewsAPI**, **The Guardian**, and **New York Times**
+- **Advanced Filtering & Sorting** – Filter by **category, source, date range, and sort order**
+- **Keyword Search** – Search for specific topics or terms across all sources
+- **Light/Dark Mode Support** – Toggle light and dark modes (including system theme preferences)
+- **Optimized Pagination** – Efficient pagination with state persistence
+- **State Management** – Uses **Redux Toolkit (RTK Query)** for data fetching and caching
+- **Error Handling** – User-friendly toasts for API failures, rate limits, and network issues
+- **Comprehensive Testing** – Unit and integration tests using **Vitest & React Testing Library**
+- **Fully Containerized** – Dockerized for straightforward deployment
+- **Fast & Lightweight** – Built with **Vite** for quick dev and optimized production builds
 
-✅ **Advanced Filtering & Sorting** - Users can filter articles by **category, source, date range, and sort order**.
-
-✅ **Keyword Search** - Search for specific topics or terms across all sources.
-
-✅ **Light/Dark Mode Support** - Fully supports **dark mode and system theme preferences**.
-
-✅ **Optimized Pagination** - Efficient **pagination with state persistence**.
-
-✅ **State Management** - Uses **Redux Toolkit (RTK Query) for data fetching, caching, and state persistence**.
-
-✅ **Error Handling** - Provides user-friendly error messages and toasts for **API failures, rate limits, and connectivity issues**.
-
-✅ **Comprehensive Testing** - Includes **unit and integration tests with Vitest & React Testing Library**.
-
-✅ **Fully Containerized** - **Dockerized application** for easy deployment.
-
-✅ **Fast & Lightweight** - Uses **Vite** for a fast development experience and optimized builds.
+---
 
 ## Tech Stack
 
@@ -38,9 +38,11 @@ The application offers an intuitive and efficient news browsing experience with 
 - **State Management:** Redux Toolkit (RTK Query)
 - **UI Framework:** ShadCN UI, Tailwind CSS
 - **Testing:** Vitest, React Testing Library
-- **API Integration:** NewsAPI, The Guardian API, NYT API
+- **API Integration:** NewsAPI, The Guardian, NYT API
 - **Error Handling:** Custom RTK Interceptor with Toast Notifications
 - **Deployment:** Docker, Nginx
+
+---
 
 ## Installation & Setup
 
@@ -64,7 +66,7 @@ The application offers an intuitive and efficient news browsing experience with 
    npm install
    ```
 
-3. **Set up environment variables** (Create a `.env` file)
+3. **Set up environment variables** (create a `.env` file)
 
    ```sh
    VITE_NEWSAPI_BASE_URL=https://newsapi.org/v2
@@ -76,104 +78,107 @@ The application offers an intuitive and efficient news browsing experience with 
    VITE_NYTIMES_KEY=your_nytimes_api_key
    ```
 
-   **Note:** If running locally without Docker, ensure you **uncomment the environment variable imports** in each API file to use `.env` variables.
-
-   You can find the comments (For Dev) and it will look like the below:
-
-   ```js
-   /* For Dev (Uncomment to use in dev environment and comment out in prod) */
-   // const NYTIMES_BASE_URL = import.meta.env.VITE_NYTIMES_BASE_URL;
-   // const NYTIMES_KEY = import.meta.env.VITE_NYTIMES_KEY;
-
-   /* For Prod */
-   const NYTIMES_BASE_URL = getEnv("VITE_NYTIMES_BASE_URL");
-   const NYTIMES_KEY = getEnv("VITE_NYTIMES_KEY");
-   ```
+   **Note:** If running locally **without** Docker, ensure you **uncomment** the environment variable imports in each API file (they're labeled “For Dev”) and **comment out** the “For Prod” lines that use `getEnv(...)`.
 
 4. **Start the development server**
-
    ```sh
    npm run dev
    ```
+
+---
 
 ## Usage
 
 ### Filters & Search
 
-- **Search for articles** by entering a keyword.
-- **Filter by source, category, date range, and sort order**.
-- **Navigate between pages** using pagination controls.
+- **Search** by entering keywords.
+- **Filter** by source, category, date range, and sort order.
+- **Paginate** through results efficiently.
 
 ### Light/Dark Mode
 
-- Click the **theme toggle button** to switch between **light and dark mode**.
+- Toggle **light/dark mode** via the theme switch.
+- Supports **system default** theme preference.
+
+---
 
 ## Deployment
 
-### Docker Deployment
+### 1. **Hosted**
 
-You can run NexaNews using Docker with the prebuilt image from **Docker Hub**:
+View the live demo on Vercel at:  
+<https://nexanews-black.vercel.app/>
 
-#### Pull & Run the Container
+### 2. **Docker Deployment**
 
-1. **Pull the image from Docker Hub**
+You can run NexaNews using Docker with the **prebuilt image**:
+
+#### **Pull & Run the Container**
+
+1. **Pull from Docker Hub**
    ```sh
    docker pull etdodger1/nexanews:latest
    ```
 2. **Run the container**
-
    ```sh
-   docker run -d --name nexanews -p 80:80 etdodger1/nexanews:latest
+   docker run -d \
+     --name nexanews \
+     -p 80:80 \
+     etdodger1/nexanews:latest
    ```
+   Access it at <http://localhost>.
 
-   - The application will be available at: **[http://localhost](http://localhost)**
+#### **Build & Run Manually**
 
-#### Build & Run Manually
+Alternatively, build the image yourself:
 
-Alternatively, you can build the image yourself:
-
-1. **Build the Docker image**
+1. **Build**
    ```sh
    docker build -t nexanews .
    ```
-2. **Run the container**
-
+2. **Run**
    ```sh
-   docker run -d -p 3000:80 --name nexanews nexanews
+   docker run -d --name nexanews -p 80:80 etdodger1/nexanews:latest
    ```
+   Access it at <http://localhost:3000>.
 
-   - The application will be available at: **[http://localhost:3000](http://localhost:3000)**
+---
 
 ## State Management
 
-- Uses **Redux Toolkit (RTK Query)** to handle **API requests, caching, and state persistence**.
-- **Redux Persist** ensures **filters & user preferences** persist across sessions.
+- **Redux Toolkit (RTK Query)** for API requests and caching.
+- **Redux Persist** stores user filters & preferences across sessions.
+
+---
 
 ## API Handling & Error Management
 
-- **RTK Query Interceptor** handles **API errors and network failures**.
-- **Toast notifications** inform users about **rate limits, network issues, and API failures**.
-- **Partial Failure Handling** ensures **one failing API does not crash the entire app**.
+- **RTK Query Interceptor** for handling API errors, network failures, and partial success.
+- **Toast notifications** for rate limits, offline states, and other issues.
+- **Partial failure handling** ensures that a single failing source doesn’t crash the entire aggregator.
+
+---
 
 ## Testing
 
-- **Unit & Integration tests** with **Vitest & React Testing Library**.
-- **Mock API responses** for **reliable test cases**.
+- **Unit & Integration Tests** with **Vitest & React Testing Library**.
+- **Mocked API Responses** provide consistent, reliable tests.
+
+---
 
 ## API Limitations & Considerations
 
 🚨 **Important Notes:**
 
-- The app relies on **free-tier APIs**, which have **rate limits**.
-- Some APIs may **return partial results** due to **rate limits or missing data**.
-- If one API fails, the app **will still work using available sources**.
-
-## Documentation
-
-For further details on the app, refer to the **repository's Docker documentation** and **project documentation files**.
+- **Free-tier APIs** have rate limits.
+- Some sources may **return partial data** if limits are reached.
+- The app **tolerates partial failures** gracefully.
 
 ---
 
-🐳 **Docker Hub:** [NexaNews Docker Image](https://hub.docker.com/repository/docker/etdodger1/nexanews/general)
+## Documentation
 
-🌐 **Live Application (After Running the Container):** [http://localhost](http://localhost) or [http://localhost:3000](http://localhost:3000) (If using manual build)
+- **Docker Hub:** [NexaNews Docker Image](https://hub.docker.com/r/etdodger1/nexanews)
+- **Live Demo:** [NexaNews on Vercel](https://nexanews-black.vercel.app/)
+- **Local Development:** `npm run dev`
+- **Project Repo:** [GitHub - omar-ashraf2/nexanews](https://github.com/omar-ashraf2/nexanews)

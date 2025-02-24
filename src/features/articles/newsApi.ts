@@ -4,7 +4,8 @@
  * Fetches data from NewsAPI's "everything" endpoint.
  */
 
-import { getEnv } from "@/config";
+/* For Prod (Docker) */
+// import { getEnv } from "@/config";
 import type { NewsAPIResponse } from "@/types/NewsAPI";
 import { SortOrder } from "@/types/SortOrder";
 import type {
@@ -16,12 +17,12 @@ import type {
 const MAX_PAGE = 50;
 
 /* For Dev (Uncomment to use in dev environment and comment out in prod) */
-// const NEWSAPI_BASE_URL = import.meta.env.VITE_NEWSAPI_BASE_URL;
-// const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
+const NEWSAPI_BASE_URL = import.meta.env.VITE_NEWSAPI_BASE_URL;
+const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
 
-/* For Prod */
-const NEWSAPI_BASE_URL = getEnv("VITE_NEWSAPI_BASE_URL");
-const NEWSAPI_KEY = getEnv("VITE_NEWSAPI_KEY");
+/* For Prod (Docker) */
+// const NEWSAPI_BASE_URL = getEnv("VITE_NEWSAPI_BASE_URL");
+// const NEWSAPI_KEY = getEnv("VITE_NEWSAPI_KEY");
 
 export async function newsApi(
   baseQuery: BaseQueryFn<

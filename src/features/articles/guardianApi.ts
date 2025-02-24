@@ -4,7 +4,8 @@
  * Fetches data from The Guardian `search` endpoint.
  */
 
-import { getEnv } from "@/config";
+/* For Prod (Docker) */
+// import { getEnv } from "@/config";
 import type { GuardianResponse } from "@/types/Guardian";
 import { SortOrder } from "@/types/SortOrder";
 import type {
@@ -16,12 +17,12 @@ import type {
 const MAX_PAGE = 50;
 
 /* For Dev (Uncomment to use in dev environment and comment out in prod) */
-// const GUARDIAN_BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL;
-// const GUARDIAN_KEY = import.meta.env.VITE_GUARDIAN_KEY;
+const GUARDIAN_BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL;
+const GUARDIAN_KEY = import.meta.env.VITE_GUARDIAN_KEY;
 
-/* For Prod */
-const GUARDIAN_BASE_URL = getEnv("VITE_GUARDIAN_BASE_URL");
-const GUARDIAN_KEY = getEnv("VITE_GUARDIAN_KEY");
+/* For Prod (Docker) */
+// const GUARDIAN_BASE_URL = getEnv("VITE_GUARDIAN_BASE_URL");
+// const GUARDIAN_KEY = getEnv("VITE_GUARDIAN_KEY");
 
 const GUARDIAN_CATEGORY_MAP: Record<string, string> = {
   business: "business",
